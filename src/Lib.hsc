@@ -16,10 +16,10 @@ foreign import ccall "glp_add_cols" glp_add_cols :: ProblemPtr -> CInt -> IO CIn
 foreign import ccall "glp_add_rows" glp_add_rows :: ProblemPtr -> CInt -> IO CInt
 foreign import ccall "glp_set_row_bnds" glp_set_row_bnds :: ProblemPtr -> CInt -> CInt -> CDouble -> CDouble -> IO ()
 foreign import ccall "glp_set_col_bnds" glp_set_col_bnds :: ProblemPtr -> CInt -> CInt -> CDouble -> CDouble -> IO ()
-foreign import ccall "glp_set_col_bnds" glp_set_obj_coef :: ProblemPtr -> CInt -> CDouble -> IO ()
-foreign import ccall "glp_set_mat_row" glp_set_mat_row :: ProblemPtr -> CInt -> CInt -> Ptr CInt -> IO ()
-foreign import ccall "glp_set_mat_col" glp_set_mat_col :: ProblemPtr -> CInt -> CInt -> Ptr CInt -> IO ()
-foreign import ccall "glp_write_lp" glp_write_lp :: ProblemPtr -> CString -> IO ()
+foreign import ccall "glp_set_obj_coef" glp_set_obj_coef :: ProblemPtr -> CInt -> CDouble -> IO ()
+foreign import ccall "glp_set_mat_row" glp_set_mat_row :: ProblemPtr -> CInt -> CInt -> Ptr CInt -> Ptr CDouble -> IO ()
+foreign import ccall "glp_set_mat_col" glp_set_mat_col :: ProblemPtr -> CInt -> CInt -> Ptr CInt -> Ptr CDouble -> IO ()
+foreign import ccall "glp_write_lp" glp_write_lp :: ProblemPtr -> Ptr CInt -> CString -> IO ()
 
 glp_MAJOR_VERSION = CInt #const GLP_MAJOR_VERSION
 glp_MINOR_VERSION = CInt #const GLP_MINOR_VERSION
