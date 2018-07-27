@@ -7,9 +7,23 @@ import Foreign.C.Types
 import Foreign.Ptr
 import Foreign.Storable
 
+#include <glpk.h>
+
 data Problem
 
 type ProblemPtr = Ptr Problem
+
+-- | An array whose data begins at index 1
+newtype GlpkArray a
+  = GlpkArray
+  { fromGplkArray :: Ptr a
+  }
+  deriving
+    ( Show
+    , Ord
+    , Eq
+    , Storable
+    )
 
 newtype VariableIndex
   = VariableIndex { fromVariableIndex :: CInt}
@@ -30,8 +44,6 @@ newtype ConstraintIndex
     , Ord
     , Eq
     )
-
-#include <glpk.h>
 
 foreign import ccall "glp_create_prob" glp_create_prob
   :: IO ProblemPtr
@@ -72,8 +84,8 @@ foreign import ccall "glp_set_mat_row" glp_set_mat_row
   :: ProblemPtr
   -> ConstraintIndex
   -> CInt
-  -> Ptr VariableIndex
-  -> Ptr CDouble
+  -> GlpkArray VariableIndex
+  -> GlpkArray CDouble
   -> IO ()
 
 foreign import ccall "glp_set_mat_col" glp_set_mat_col
@@ -81,7 +93,7 @@ foreign import ccall "glp_set_mat_col" glp_set_mat_col
   -> VariableIndex
   -> CInt
   -> Ptr ConstraintIndex
-  -> Ptr CDouble
+  -> GlpkArray CDouble
   -> IO ()
 
 foreign import ccall "glp_write_lp" glp_write_lp

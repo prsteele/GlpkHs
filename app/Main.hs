@@ -8,6 +8,7 @@ import Foreign.Marshal.Alloc
 import Foreign.Marshal.Array
 import Text.Printf
 
+import Math.Programming.Glpk
 import Math.Programming.Glpk.Header
 
 main :: IO ()
@@ -23,11 +24,13 @@ main = do
 
   -- Set the constraint  
   glp_set_row_bnds problem row glpkLT 0 4
-  indices <- newArray [VariableIndex 0, x_index, y_index]
-  coefs <- newArray [0, 1.0, 1.0]
+
+  indices <- mkGlpkArray [x_index, y_index]
+
+  coefs <- mkGlpkArray [1.0, 1.0]
   glp_set_mat_row problem row 2 indices coefs
-  free indices
-  free coefs
+  free (fromGplkArray indices)
+  free (fromGplkArray coefs)
 
   glp_set_col_bnds problem x_index glpkEQ 1 8
   glp_set_col_bnds problem y_index glpkEQ 0 10
