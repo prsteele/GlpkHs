@@ -8,7 +8,7 @@ import Foreign.Marshal.Alloc
 import Foreign.Marshal.Array
 import Text.Printf
 
-import Lib
+import Math.Programming.Glpk.Header
 
 main :: IO ()
 main = do

@@ -1,6 +1,6 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-module Lib where
+module Math.Programming.Glpk.Header where
 
 import Foreign.C
 import Foreign.C.Types
