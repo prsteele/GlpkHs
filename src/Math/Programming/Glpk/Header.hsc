@@ -206,91 +206,537 @@ newtype GlpkVariableStatus
  , glpkNonBasicFixed = GLP_NS
  }
 
+newtype GlpkScaling
+  = GlpkScaling { fromGlpkScaling :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
 
-glp_SF_GM = CInt #const GLP_SF_GM
-glp_SF_EQ = CInt #const GLP_SF_EQ
-glp_SF_2N = CInt #const GLP_SF_2N
-glp_SF_SKIP = CInt #const GLP_SF_SKIP
-glp_SF_AUTO = CInt #const GLP_SF_AUTO
-glp_SOL = CInt #const GLP_SOL
-glp_IPT = CInt #const GLP_IPT
-glp_MIP = CInt #const GLP_MIP
-glp_UNDEF = CInt #const GLP_UNDEF
-glp_FEAS = CInt #const GLP_FEAS
-glp_INFEAS = CInt #const GLP_INFEAS
-glp_NOFEAS = CInt #const GLP_NOFEAS
-glp_OPT = CInt #const GLP_OPT
-glp_UNBND = CInt #const GLP_UNBND
-glp_MSG_OFF = CInt #const GLP_MSG_OFF
-glp_MSG_ERR = CInt #const GLP_MSG_ERR
-glp_MSG_ON = CInt #const GLP_MSG_ON
-glp_MSG_ALL = CInt #const GLP_MSG_ALL
-glp_MSG_DBG = CInt #const GLP_MSG_DBG
-glp_PRIMAL = CInt #const GLP_PRIMAL
-glp_DUALP = CInt #const GLP_DUALP
-glp_DUAL = CInt #const GLP_DUAL
-glp_PT_STD = CInt #const GLP_PT_STD
-glp_PT_PSE = CInt #const GLP_PT_PSE
-glp_RT_STD = CInt #const GLP_RT_STD
-glp_RT_HAR = CInt #const GLP_RT_HAR
-glp_ORD_NONE = CInt #const GLP_ORD_NONE
-glp_ORD_QMD = CInt #const GLP_ORD_QMD
-glp_ORD_AMD = CInt #const GLP_ORD_AMD
-glp_ORD_SYMAMD = CInt #const GLP_ORD_SYMAMD
-glp_BR_FFV = CInt #const GLP_BR_FFV
-glp_BR_LFV = CInt #const GLP_BR_LFV
-glp_BR_MFV = CInt #const GLP_BR_MFV
-glp_BR_DTH = CInt #const GLP_BR_DTH
-glp_BR_PCH = CInt #const GLP_BR_PCH
-glp_BT_DFS = CInt #const GLP_BT_DFS
-glp_BT_BFS = CInt #const GLP_BT_BFS
-glp_BT_BLB = CInt #const GLP_BT_BLB
-glp_BT_BPH = CInt #const GLP_BT_BPH
-glp_PP_NONE = CInt #const GLP_PP_NONE
-glp_PP_ROOT = CInt #const GLP_PP_ROOT
-glp_PP_ALL = CInt #const GLP_PP_ALL
-glp_RF_REG = CInt #const GLP_RF_REG
-glp_RF_LAZY = CInt #const GLP_RF_LAZY
-glp_RF_CUT = CInt #const GLP_RF_CUT
-glp_RF_GMI = CInt #const GLP_RF_GMI
-glp_RF_MIR = CInt #const GLP_RF_MIR
-glp_RF_COV = CInt #const GLP_RF_COV
-glp_RF_CLQ = CInt #const GLP_RF_CLQ
-glp_ON = CInt #const GLP_ON
-glp_OFF = CInt #const GLP_OFF
-glp_IROWGEN = CInt #const GLP_IROWGEN
-glp_IBINGO = CInt #const GLP_IBINGO
-glp_IHEUR = CInt #const GLP_IHEUR
-glp_ICUTGEN = CInt #const GLP_ICUTGEN
-glp_IBRANCH = CInt #const GLP_IBRANCH
-glp_ISELECT = CInt #const GLP_ISELECT
-glp_IPREPRO = CInt #const GLP_IPREPRO
-glp_NO_BRNCH = CInt #const GLP_NO_BRNCH
-glp_DN_BRNCH = CInt #const GLP_DN_BRNCH
-glp_UP_BRNCH = CInt #const GLP_UP_BRNCH
-glp_EBADB = CInt #const GLP_EBADB
-glp_ESING = CInt #const GLP_ESING
-glp_ECOND = CInt #const GLP_ECOND
-glp_EBOUND = CInt #const GLP_EBOUND
-glp_EFAIL = CInt #const GLP_EFAIL
-glp_EOBJLL = CInt #const GLP_EOBJLL
-glp_EOBJUL = CInt #const GLP_EOBJUL
-glp_EITLIM = CInt #const GLP_EITLIM
-glp_ETMLIM = CInt #const GLP_ETMLIM
-glp_ENOPFS = CInt #const GLP_ENOPFS
-glp_ENODFS = CInt #const GLP_ENODFS
-glp_EROOT = CInt #const GLP_EROOT
-glp_ESTOP = CInt #const GLP_ESTOP
-glp_EMIPGAP = CInt #const GLP_EMIPGAP
-glp_ENOFEAS = CInt #const GLP_ENOFEAS
-glp_ENOCVG = CInt #const GLP_ENOCVG
-glp_EINSTAB = CInt #const GLP_EINSTAB
-glp_EDATA = CInt #const GLP_EDATA
-glp_ERANGE = CInt #const GLP_ERANGE
-glp_KKT_PE = CInt #const GLP_KKT_PE
-glp_KKT_PB = CInt #const GLP_KKT_PB
-glp_KKT_DE = CInt #const GLP_KKT_DE
-glp_KKT_DB = CInt #const GLP_KKT_DB
-glp_KKT_CS = CInt #const GLP_KKT_CS
-glp_MPS_DECK = CInt #const GLP_MPS_DECK
-glp_MPS_FILE = CInt #const GLP_MPS_FILE
+#{enum
+   GlpkScaling
+ , GlpkScaling
+ , glpkGeometricMeanScaling = GLP_SF_GM
+ , glpkEquilibrationScaling = GLP_SF_EQ
+ , glpkPowerOfTwoScaling = GLP_SF_2N
+ , glpkSkipScaling = GLP_SF_SKIP
+ , glpkAutoScaling = GLP_SF_AUTO
+ }
+
+newtype GlpkSolutionType
+  = GlpkSolutionType { fromGlpkSolutionType :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkSolutionType
+ , GlpkSolutionType
+ , glpkBasicSolution = GLP_SOL
+ , glpkInteriorPointSolution = GLP_IPT
+ , glpkMIPSolution = GLP_MIP
+ }
+
+newtype GlpkSolutionStatus
+  = GlpkSolutionStatus { fromGlpkSolutionStatus :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkSolutionStatus
+ , GlpkSolutionStatus
+ , glpkOptimal = GLP_OPT
+ , glpkFeasible = GLP_FEAS
+ , glpkInfeasible = GLP_INFEAS
+ , glpkNoFeasible = GLP_NOFEAS
+ , glpkUnbounded = GLP_UNBND
+ , glpkUndefined = GLP_UNDEF
+ }
+
+newtype GlpkInteriorPointParams
+  = GlpkInteriorPointParams { fromGlpkInteriorPointParams :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkInteriorPointParams
+ , GlpkInteriorPointParams
+ , glpkInteriorMessageOff = GLP_MSG_OFF
+ , glpkInteriorMessageError = GLP_MSG_ERR
+ , glpkInteriorMessageOn = GLP_MSG_ON
+ , glpkInteriorMessageAll = GLP_MSG_ALL
+ , glpkInteriorMessageDebug = GLP_MSG_DBG
+ }
+
+newtype GlpkSimplexMethod
+  = GlpkSimplexMethod { fromGlpkSimplexMethod :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkSimplexMethod
+ , GlpkSimplexMethod
+ , glpkPrimalSimplex = GLP_PRIMAL
+ , glpkDualSimplex = GLP_DUAL
+ , glpkDualPSimplex = GLP_DUALP
+ }
+
+newtype GlpkPricing
+  = GlpkPricing { fromGlpkPricing :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkPricing
+ , GlpkPricing
+ , glpkTextbookPricing = GLP_PT_STD
+ , glpkStandardPricing = GLP_PT_STD
+ , glpkProjectedSteepestEdge = GLP_PT_PSE
+ }
+
+newtype GlpkRatioTest
+  = GlpkRatioTest { fromGlpkRatioTest :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkRatioTest
+ , GlpkRatioTest
+ , glpkStandardRatioTest = GLP_RT_STD
+ , glpkHarrisTwoPassRatioTest = GLP_RT_HAR
+ }
+
+newtype GlpkPreCholeskyOrdering
+  = GlpkPreCholeskyOrdering { fromGlpkPreCholeskyOrdering :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkPreCholeskyOrdering
+ , GlpkPreCholeskyOrdering
+ , glpkNatural = GLP_ORD_NONE
+ , glpkQuotientMinimumDegree = GLP_ORD_QMD
+ , glpkApproximateMinimumDegree = GLP_ORD_AMD
+ , glpkSymmetricApproximateMinimumDegree = GLP_ORD_SYMAMD
+ }
+
+newtype GlpkBranchingTechnique
+  = GlpkBranchingTechnique { fromGlpkBranchingTechnique :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkBranchingTechnique
+ , GlpkBranchingTechnique
+ , glpkFirstFractional = GLP_BR_FFV
+ , glpkLastFractional = GLP_BR_LFV
+ , glpkMostFractional = GLP_BR_MFV
+ , glpkDriebeckTomlin = GLP_BR_DTH
+ , glpkHybridPseudoCost = GLP_BR_PCH
+ }
+
+newtype GlpkBacktrackingTechnique
+  = GlpkBacktrackingTechnique { fromGlpkBacktrackingTechnique :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkBacktrackingTechnique
+ , GlpkBacktrackingTechnique
+ , glpkDepthFirstSearch = GLP_BT_DFS
+ , glpkBreadthFirstSearch = GLP_BT_BFS
+ , glpkBestLocalBound = GLP_BT_BLB
+ , glpkBestProjectionHeuristic = GLP_BT_BPH
+ }
+
+newtype GlpkPostProcessingTechnique
+  = GlpkPostProcessingTechnique { fromGlpkPostProcessingTechnique :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkPostProcessingTechnique
+ , GlpkPostProcessingTechnique
+ , glpkPostProcessNone = GLP_PP_NONE
+ , glpkPostProcessRoot = GLP_PP_ROOT
+ , glpkPostProcessAll = GLP_PP_ALL
+ }
+
+newtype GlpkFeasibilityPump
+  = GlpkFeasibilityPump { fromGlpkFeasibilityPump :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkFeasibilityPump
+ , GlpkFeasibilityPump
+ , glpkFeasibilityPumpOn = GLP_ON
+ , glpkFeasibilityPumpOff = GLP_OFF
+ }
+
+newtype GlpkProximitySearch
+  = GlpkProximitySearch { fromGlpkProximitySearch :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkProximitySearch
+ , GlpkProximitySearch
+ , glpkProximitySearchOn = GLP_ON
+ , glpkProximitySearchOff = GLP_OFF
+ }
+
+newtype GlpkGomoryCuts
+  = GlpkGomoryCuts { fromGlpkGomoryCuts :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkGomoryCuts
+ , GlpkGomoryCuts
+ , glpkGomoryCutsOn = GLP_ON
+ , glpkGomoryCutsOff = GLP_OFF
+ }
+
+newtype GlpkMIRCuts
+  = GlpkMIRCuts { fromGlpkMIRCuts :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkMIRCuts
+ , GlpkMIRCuts
+ , glpkMIRCutsOn = GLP_ON
+ , glpkMIRCutsOff = GLP_OFF
+ }
+
+newtype GlpkCoverCuts
+  = GlpkCoverCuts { fromGlpkCoverCuts :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkCoverCuts
+ , GlpkCoverCuts
+ , glpkCoverCutsOn = GLP_ON
+ , glpkCoverCutsOff = GLP_OFF
+ }
+
+newtype GlpkCliqueCuts
+  = GlpkCliqueCuts { fromGlpkCliqueCuts :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkCliqueCuts
+ , GlpkCliqueCuts
+ , glpkCliqueCutsOn = GLP_ON
+ , glpkCliqueCutsOff = GLP_OFF
+ }
+
+newtype GlpkMIPPresolve
+  = GlpkMIPPresolve { fromGlpkMIPPresolve :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkMIPPresolve
+ , GlpkMIPPresolve
+ , glpkMIPPresolveOn = GLP_ON
+ , glpkMIPPresolveOff = GLP_OFF
+ }
+
+newtype GlpkBinarization
+  = GlpkBinarization { fromGlpkBinarization :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkBinarization
+ , GlpkBinarization
+ , glpkBinarizationOn = GLP_ON
+ , glpkBinarizationOff = GLP_OFF
+ }
+
+newtype GlpkConstraintOrigin
+  = GlpkConstraintOrigin { fromGlpkConstraintOrigin :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkConstraintOrigin
+ , GlpkConstraintOrigin
+ , glpkRegularConstraint = GLP_RF_REG
+ , glpkLazyConstraint = GLP_RF_LAZY
+ , glpkCuttingPlaneConstraint = GLP_RF_CUT
+ }
+
+newtype GlpkCutType
+  = GlpkCutType { fromGlpkCutType :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkCutType
+ , GlpkCutType
+ , glpkGomoryCut = GLP_RF_GMI
+ , glpkMIRCut = GLP_RF_MIR
+ , glpkCoverCut = GLP_RF_COV
+ , glpkCliqueCut = GLP_RF_CLQ
+ }
+
+newtype GlpkControl
+  = GlpkControl { fromGlpkControl :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkControl
+ , GlpkControl
+ , glpkOn = GLP_ON
+ , glpkOff = GLP_OFF
+ }
+
+newtype GlpkCallbackReason
+  = GlpkCallbackReason { fromGlpkCallbackReason :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkCallbackReason
+ , GlpkCallbackReason
+ , glpkSubproblemSelection = GLP_ISELECT
+ , glpkPreprocessing = GLP_IPREPRO
+ , glpkRowGeneration = GLP_IROWGEN
+ , glpkHeuristicSolution = GLP_IHEUR
+ , glpkCutGeneration = GLP_ICUTGEN
+ , glpkBranching = GLP_IBRANCH
+ , glpkNewIncumbent = GLP_IBINGO
+ }
+
+newtype GlpkBranchOption
+  = GlpkBranchOption { fromGlpkBranchOption :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkBranchOption
+ , GlpkBranchOption
+ , glpkBranchUp = GLP_UP_BRNCH
+ , glpkBranchDown = GLP_DN_BRNCH
+ , glpkBranchAuto = GLP_NO_BRNCH
+ }
+
+newtype GlpkFactorizationResult
+  = GlpkFactorizationResult { fromGlpkFactorizationResult :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkFactorizationResult
+ , GlpkFactorizationResult
+ , glpkFactorizationSuccess = 0
+ , glpkFactorizationBadBasis = GLP_EBADB
+ , glpkFactorizationSingular = GLP_ESING
+ , glpkFactorizationIllConditioned = GLP_ECOND
+ }
+
+newtype GlpkSimplexStatus
+  = GlpkSimplexStatus { fromGlpkSimplexStatus :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkSimplexStatus
+ , GlpkSimplexStatus
+ , glpkSimplexSuccess = 0
+ , glpkSimplexBadBasis = GLP_EBADB
+ , glpkSimplexSingular = GLP_ESING
+ , glpkSimplexIllConditioned = GLP_ECOND
+ , glpkSimplexBadBound = GLP_EBOUND
+ , glpkSimplexFailure = GLP_EFAIL
+ , glpkSimplexDualLowerLimitFailure = GLP_EOBJLL
+ , glpkSimplexDualUpperLimitFailure = GLP_EOBJUL
+ , glpkSimplexIterationLimit = GLP_EITLIM
+ , glpkSimplexTimeLimit = GLP_ETMLIM
+ , glpkSimplexPrimalInfeasible = GLP_ENOPFS
+ , glpkSimplexDualInfeasible = GLP_ENODFS
+ }
+
+newtype GlpkMIPStatus
+  = GlpkMIPStatus { fromGlpkMIPStatus :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkMIPStatus
+ , GlpkMIPStatus
+ , glpkMIPSuccess = 0
+ , glpkMIPBadBound = GLP_EBOUND
+ , glpkMIPNoBasis = GLP_EROOT
+ , glpkMIPPrimalInfeasible = GLP_ENOPFS
+ , glpkMIPDualInfeasible =  GLP_ENODFS
+ , glpkMIPFailure = GLP_EFAIL
+ , glpkMIPRelativeGap = GLP_EMIPGAP
+ , glpkMIPTimeLimit = GLP_ETMLIM
+ , glpkMIPStopped = GLP_ESTOP
+ }
+
+newtype GlpkInteriorPointStatus
+  = GlpkInteriorPointStatus { fromGlpkInteriorPointStatus :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkInteriorPointStatus
+ , GlpkInteriorPointStatus
+ , glpkInteriorPointSuccess = 0
+ , glpkInteriorPointFailure = GLP_EFAIL
+ , glpkInteriorPointNoConvergence = GLP_ENOCVG
+ , glpkInteriorPointIterationLimit = GLP_EITLIM
+ , glpkInteriorPointNumericalInstability = GLP_EINSTAB
+ }
+
+newtype GlpkKKTCheck
+  = GlpkKKTCheck { fromGlpkKKTCheck :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkKKTCheck
+ , GlpkKKTCheck
+ , glpkKKTPrimalEquality = GLP_KKT_PE
+ , glpkKKTPrimalBound = GLP_KKT_PB
+ , glpkKKTDualEquality = GLP_KKT_DE
+ , glpkKKTDualBound = GLP_KKT_DB
+ }
+
+newtype GlpkMPSFormat
+  = GlpkMPSFormat { fromGlpkMPSFormat :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkMPSFormat
+ , GlpkMPSFormat
+ , glpkMPSAncient = GLP_MPS_DECK
+ , glpkMPSDeck = GLP_MPS_DECK
+ , glpkMPSModern = GLP_MPS_FILE
+ }
