@@ -1,43 +1,200 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Lib where
 
 import Foreign.C
 import Foreign.C.Types
 import Foreign.Ptr
+import Foreign.Storable
 
 data Problem
 
 type ProblemPtr = Ptr Problem
 
+newtype VariableIndex
+  = VariableIndex { fromVariableIndex :: CInt}
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    , Storable
+    , Enum
+    )
+
+newtype ConstraintIndex
+  = ConstraintIndex { fromConstraintIndex :: CInt}
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
 #include <glpk.h>
 
-foreign import ccall "glp_create_prob" glp_create_prob :: IO ProblemPtr
-foreign import ccall "glp_add_cols" glp_add_cols :: ProblemPtr -> CInt -> IO CInt
-foreign import ccall "glp_add_rows" glp_add_rows :: ProblemPtr -> CInt -> IO CInt
-foreign import ccall "glp_set_row_bnds" glp_set_row_bnds :: ProblemPtr -> CInt -> CInt -> CDouble -> CDouble -> IO ()
-foreign import ccall "glp_set_col_bnds" glp_set_col_bnds :: ProblemPtr -> CInt -> CInt -> CDouble -> CDouble -> IO ()
-foreign import ccall "glp_set_obj_coef" glp_set_obj_coef :: ProblemPtr -> CInt -> CDouble -> IO ()
-foreign import ccall "glp_set_mat_row" glp_set_mat_row :: ProblemPtr -> CInt -> CInt -> Ptr CInt -> Ptr CDouble -> IO ()
-foreign import ccall "glp_set_mat_col" glp_set_mat_col :: ProblemPtr -> CInt -> CInt -> Ptr CInt -> Ptr CDouble -> IO ()
-foreign import ccall "glp_write_lp" glp_write_lp :: ProblemPtr -> Ptr CInt -> CString -> IO ()
+foreign import ccall "glp_create_prob" glp_create_prob
+  :: IO ProblemPtr
 
-glp_MAJOR_VERSION = CInt #const GLP_MAJOR_VERSION
-glp_MINOR_VERSION = CInt #const GLP_MINOR_VERSION
-glp_MIN = CInt #const GLP_MIN
-glp_MAX = CInt #const GLP_MAX
-glp_CV = CInt #const GLP_CV
-glp_IV = CInt #const GLP_IV
-glp_BV = CInt #const GLP_BV
-glp_FR = CInt #const GLP_FR
-glp_LO = CInt #const GLP_LO
-glp_UP = CInt #const GLP_UP
-glp_DB = CInt #const GLP_DB
-glp_FX = CInt #const GLP_FX
-glp_BS = CInt #const GLP_BS
-glp_NL = CInt #const GLP_NL
-glp_NU = CInt #const GLP_NU
-glp_NF = CInt #const GLP_NF
-glp_NS = CInt #const GLP_NS
+foreign import ccall "glp_add_cols" glp_add_cols
+  :: ProblemPtr
+  -> CInt
+  -> IO VariableIndex
+
+foreign import ccall "glp_add_rows" glp_add_rows
+  :: ProblemPtr
+  -> CInt
+  -> IO ConstraintIndex
+
+foreign import ccall "glp_set_row_bnds" glp_set_row_bnds
+  :: ProblemPtr
+  -> ConstraintIndex
+  -> GlpkConstraintType
+  -> CDouble
+  -> CDouble
+  -> IO ()
+
+foreign import ccall "glp_set_col_bnds" glp_set_col_bnds
+  :: ProblemPtr
+  -> VariableIndex
+  -> GlpkConstraintType
+  -> CDouble
+  -> CDouble
+  -> IO ()
+
+foreign import ccall "glp_set_obj_coef" glp_set_obj_coef
+  :: ProblemPtr
+  -> VariableIndex
+  -> CDouble
+  -> IO ()
+
+foreign import ccall "glp_set_mat_row" glp_set_mat_row
+  :: ProblemPtr
+  -> ConstraintIndex
+  -> CInt
+  -> Ptr VariableIndex
+  -> Ptr CDouble
+  -> IO ()
+
+foreign import ccall "glp_set_mat_col" glp_set_mat_col
+  :: ProblemPtr
+  -> VariableIndex
+  -> CInt
+  -> Ptr ConstraintIndex
+  -> Ptr CDouble
+  -> IO ()
+
+foreign import ccall "glp_write_lp" glp_write_lp
+  :: ProblemPtr
+  -> Ptr CInt
+  -> CString
+  -> IO ()
+
+foreign import ccall "glp_simplex" glp_simplex
+  :: ProblemPtr
+  -> Ptr CInt
+  -> IO CInt
+
+newtype GlpkMajorVersion = GlpkMajorVersion { fromGlpkMajorVersion :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+newtype GlpkMinorVersion = GlpkMinorVersion { fromGlpkMinorVersion :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkMajorVersion
+ , GlpkMajorVersion
+ , glpkMajorVersion = GLP_MAJOR_VERSION
+ }
+
+#{enum
+   GlpkMinorVersion
+ , GlpkMinorVersion
+ , glpkMinorVersion = GLP_MINOR_VERSION
+ }
+
+newtype GlpkDirection
+  = GlpkDirection { fromGlpkDirection :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkDirection
+ , GlpkDirection
+ , glpkMin = GLP_MIN
+ , glpkMax = GLP_MAX
+ }
+
+newtype GlpkVariableType
+  = GlpkVariableType { fromGlpkVariableType :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkVariableType
+ , GlpkVariableType
+ , glpkContinuous = GLP_CV
+ , glpkInteger = GLP_IV
+ , glpkBinary = GLP_BV
+ }
+
+newtype GlpkConstraintType
+  = GlpkConstraintType { fromGlpkConstraintType :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkConstraintType
+ , GlpkConstraintType
+ , glpkFree = GLP_FR
+ , glpkGT = GLP_LO
+ , glpkLT = GLP_UP
+ , glpkEQ = GLP_DB
+ , glpkFixed = GLP_FX
+ }
+
+newtype GlpkVariableStatus
+  = GlpkVariableStatus { fromGlpkVariableStatus :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkVariableStatus
+ , GlpkVariableStatus
+ , glpkBasic = GLP_BS
+ , glpkNonBasicLower = GLP_NL
+ , glpkNonBasicUpper = GLP_NU
+ , glpkNonBasicFree = GLP_NF
+ , glpkNonBasicFixed = GLP_NS
+ }
+
+
 glp_SF_GM = CInt #const GLP_SF_GM
 glp_SF_EQ = CInt #const GLP_SF_EQ
 glp_SF_2N = CInt #const GLP_SF_2N
