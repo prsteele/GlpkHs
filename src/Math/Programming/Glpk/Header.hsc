@@ -740,3 +740,49 @@ newtype GlpkMPSFormat
  , glpkMPSDeck = GLP_MPS_DECK
  , glpkMPSModern = GLP_MPS_FILE
  }
+
+newtype GlpkFactorizationType
+  = GlpkFactorizationType { fromGlpkFactorizationType :: CInt }
+  deriving
+    ( Show
+    , Read
+    , Ord
+    , Eq
+    )
+
+#{enum
+   GlpkFactorizationType
+ , GlpkFactorizationType
+ , glpkLUForrestTomlin = GLP_BF_LUF + GLP_BF_FT
+ , glpkLUSchurCompBartelsGolub = GLP_BF_LUF + GLP_BF_BG
+ , glpkLUSchurGivensRotation = GLP_BF_LUF + GLP_BF_GR
+ , glpkBTSchurBartelsGolub = GLP_BF_BTF + GLP_BF_BG
+ , glpkBTSchurGivensRotation = GLP_BF_BTF + GLP_BF_GR
+ }
+
+data BasisFactorizationControlParameters
+  = BasisFactorizationControlParameters
+    { bfcpType :: GlpkFactorizationType
+    , bfcpPivotTolerance :: CDouble
+    , bfcpPivotLimit :: CInt
+    , bfcpSuhl :: GlpkControl
+    , bfcpEpsilonTolerance :: CDouble
+    , bfcpNFSMax :: CInt
+    , bfcpUpdateTolerance :: CDouble
+    , bfcpNRSMax :: CInt
+    }
+  deriving
+    ( Show
+    )
+
+defaultBasisFactorizationControlParameters
+  = BasisFactorizationControlParameters
+    { bfcpType = glpkLUForrestTomlin
+    , bfcpPivotTolerance = 0.1
+    , bfcpPivotLimit = 4
+    , bfcpSuhl = glpkOn
+    , bfcpEpsilonTolerance = 1e-15
+    , bfcpNFSMax = 100
+    , bfcpUpdateTolerance = 1e-6
+    , bfcpNRSMax = 100
+    }
