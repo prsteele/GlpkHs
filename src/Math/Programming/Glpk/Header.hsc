@@ -4,6 +4,7 @@ module Math.Programming.Glpk.Header where
 
 import Foreign.C
 import Foreign.C.Types
+import Foreign.Marshal.Array
 import Foreign.Ptr
 import Foreign.Storable
 
@@ -12,6 +13,14 @@ import Foreign.Storable
 data Problem
 
 type ProblemPtr = Ptr Problem
+
+mkGlpkArray :: Storable a => [a] -> IO (GlpkArray a)
+mkGlpkArray xs = do
+  let aSize :: Int
+      aSize = (sizeOf (head xs))
+  array <- mallocArray (1 + length xs)
+  pokeArray (plusPtr array aSize) xs
+  return $ GlpkArray array
 
 -- | An array whose data begins at index 1
 newtype GlpkArray a
