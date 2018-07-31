@@ -28,30 +28,32 @@ newtype GlpkArray a
   { fromGplkArray :: Ptr a
   }
   deriving
-    ( Show
+    ( Eq
     , Ord
-    , Eq
+    , Show
     , Storable
     )
 
 newtype VariableIndex
   = VariableIndex { fromVariableIndex :: CInt}
   deriving
-    ( Show
-    , Read
-    , Ord
+    ( Enum
     , Eq
+    , Ord
+    , Read
+    , Show
     , Storable
-    , Enum
     )
 
 newtype ConstraintIndex
   = ConstraintIndex { fromConstraintIndex :: CInt}
   deriving
-    ( Show
-    , Read
-    , Ord
+    ( Enum
     , Eq
+    , Ord
+    , Read
+    , Show
+    , Storable
     )
 
 foreign import ccall "glp_create_prob" glp_create_prob
@@ -118,18 +120,20 @@ foreign import ccall "glp_simplex" glp_simplex
 
 newtype GlpkMajorVersion = GlpkMajorVersion { fromGlpkMajorVersion :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 newtype GlpkMinorVersion = GlpkMinorVersion { fromGlpkMinorVersion :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -147,10 +151,11 @@ newtype GlpkMinorVersion = GlpkMinorVersion { fromGlpkMinorVersion :: CInt }
 newtype GlpkDirection
   = GlpkDirection { fromGlpkDirection :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -163,10 +168,11 @@ newtype GlpkDirection
 newtype GlpkVariableType
   = GlpkVariableType { fromGlpkVariableType :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -180,10 +186,11 @@ newtype GlpkVariableType
 newtype GlpkConstraintType
   = GlpkConstraintType { fromGlpkConstraintType :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -199,10 +206,11 @@ newtype GlpkConstraintType
 newtype GlpkVariableStatus
   = GlpkVariableStatus { fromGlpkVariableStatus :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -218,10 +226,11 @@ newtype GlpkVariableStatus
 newtype GlpkScaling
   = GlpkScaling { fromGlpkScaling :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -237,10 +246,11 @@ newtype GlpkScaling
 newtype GlpkSolutionType
   = GlpkSolutionType { fromGlpkSolutionType :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -254,10 +264,11 @@ newtype GlpkSolutionType
 newtype GlpkSolutionStatus
   = GlpkSolutionStatus { fromGlpkSolutionStatus :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -274,10 +285,11 @@ newtype GlpkSolutionStatus
 newtype GlpkMessageLevel
   = GlpkMessageLevel { fromGlpkMessageLevel :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -293,10 +305,11 @@ newtype GlpkMessageLevel
 newtype GlpkSimplexMethod
   = GlpkSimplexMethod { fromGlpkSimplexMethod :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -310,10 +323,11 @@ newtype GlpkSimplexMethod
 newtype GlpkPricing
   = GlpkPricing { fromGlpkPricing :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -327,10 +341,11 @@ newtype GlpkPricing
 newtype GlpkRatioTest
   = GlpkRatioTest { fromGlpkRatioTest :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -343,10 +358,11 @@ newtype GlpkRatioTest
 newtype GlpkPreCholeskyOrdering
   = GlpkPreCholeskyOrdering { fromGlpkPreCholeskyOrdering :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -361,10 +377,11 @@ newtype GlpkPreCholeskyOrdering
 newtype GlpkBranchingTechnique
   = GlpkBranchingTechnique { fromGlpkBranchingTechnique :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -380,10 +397,11 @@ newtype GlpkBranchingTechnique
 newtype GlpkBacktrackingTechnique
   = GlpkBacktrackingTechnique { fromGlpkBacktrackingTechnique :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -398,10 +416,11 @@ newtype GlpkBacktrackingTechnique
 newtype GlpkPostProcessingTechnique
   = GlpkPostProcessingTechnique { fromGlpkPostProcessingTechnique :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -415,10 +434,11 @@ newtype GlpkPostProcessingTechnique
 newtype GlpkFeasibilityPump
   = GlpkFeasibilityPump { fromGlpkFeasibilityPump :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -431,10 +451,11 @@ newtype GlpkFeasibilityPump
 newtype GlpkProximitySearch
   = GlpkProximitySearch { fromGlpkProximitySearch :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -447,10 +468,11 @@ newtype GlpkProximitySearch
 newtype GlpkGomoryCuts
   = GlpkGomoryCuts { fromGlpkGomoryCuts :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -463,10 +485,11 @@ newtype GlpkGomoryCuts
 newtype GlpkMIRCuts
   = GlpkMIRCuts { fromGlpkMIRCuts :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -479,10 +502,11 @@ newtype GlpkMIRCuts
 newtype GlpkCoverCuts
   = GlpkCoverCuts { fromGlpkCoverCuts :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -495,10 +519,11 @@ newtype GlpkCoverCuts
 newtype GlpkCliqueCuts
   = GlpkCliqueCuts { fromGlpkCliqueCuts :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -511,10 +536,11 @@ newtype GlpkCliqueCuts
 newtype GlpkPresolve
   = GlpkPresolve { fromGlpkPresolve :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -527,10 +553,11 @@ newtype GlpkPresolve
 newtype GlpkBinarization
   = GlpkBinarization { fromGlpkBinarization :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -543,10 +570,11 @@ newtype GlpkBinarization
 newtype GlpkConstraintOrigin
   = GlpkConstraintOrigin { fromGlpkConstraintOrigin :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -560,10 +588,11 @@ newtype GlpkConstraintOrigin
 newtype GlpkCutType
   = GlpkCutType { fromGlpkCutType :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -578,10 +607,11 @@ newtype GlpkCutType
 newtype GlpkControl
   = GlpkControl { fromGlpkControl :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -594,10 +624,11 @@ newtype GlpkControl
 newtype GlpkCallbackReason
   = GlpkCallbackReason { fromGlpkCallbackReason :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -615,10 +646,11 @@ newtype GlpkCallbackReason
 newtype GlpkBranchOption
   = GlpkBranchOption { fromGlpkBranchOption :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -632,10 +664,11 @@ newtype GlpkBranchOption
 newtype GlpkFactorizationResult
   = GlpkFactorizationResult { fromGlpkFactorizationResult :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -650,10 +683,11 @@ newtype GlpkFactorizationResult
 newtype GlpkSimplexStatus
   = GlpkSimplexStatus { fromGlpkSimplexStatus :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -676,10 +710,11 @@ newtype GlpkSimplexStatus
 newtype GlpkMIPStatus
   = GlpkMIPStatus { fromGlpkMIPStatus :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -699,10 +734,11 @@ newtype GlpkMIPStatus
 newtype GlpkInteriorPointStatus
   = GlpkInteriorPointStatus { fromGlpkInteriorPointStatus :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -718,10 +754,11 @@ newtype GlpkInteriorPointStatus
 newtype GlpkKKTCheck
   = GlpkKKTCheck { fromGlpkKKTCheck :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -736,10 +773,11 @@ newtype GlpkKKTCheck
 newtype GlpkMPSFormat
   = GlpkMPSFormat { fromGlpkMPSFormat :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
@@ -753,10 +791,11 @@ newtype GlpkMPSFormat
 newtype GlpkFactorizationType
   = GlpkFactorizationType { fromGlpkFactorizationType :: CInt }
   deriving
-    ( Show
-    , Read
+    ( Eq
     , Ord
-    , Eq
+    , Read
+    , Show
+    , Storable
     )
 
 #{enum
