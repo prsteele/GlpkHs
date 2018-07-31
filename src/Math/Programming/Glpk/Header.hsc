@@ -271,8 +271,8 @@ newtype GlpkSolutionStatus
  , glpkUndefined = GLP_UNDEF
  }
 
-newtype GlpkInteriorPointParams
-  = GlpkInteriorPointParams { fromGlpkInteriorPointParams :: CInt }
+newtype GlpkMessageLevel
+  = GlpkMessageLevel { fromGlpkMessageLevel :: CInt }
   deriving
     ( Show
     , Read
@@ -281,13 +281,13 @@ newtype GlpkInteriorPointParams
     )
 
 #{enum
-   GlpkInteriorPointParams
- , GlpkInteriorPointParams
- , glpkInteriorMessageOff = GLP_MSG_OFF
- , glpkInteriorMessageError = GLP_MSG_ERR
- , glpkInteriorMessageOn = GLP_MSG_ON
- , glpkInteriorMessageAll = GLP_MSG_ALL
- , glpkInteriorMessageDebug = GLP_MSG_DBG
+   GlpkMessageLevel
+ , GlpkMessageLevel
+ , glpkMessageOff = GLP_MSG_OFF
+ , glpkMessageError = GLP_MSG_ERR
+ , glpkMessageOn = GLP_MSG_ON
+ , glpkMessageAll = GLP_MSG_ALL
+ , glpkMessageDebug = GLP_MSG_DBG
  }
 
 newtype GlpkSimplexMethod
@@ -508,8 +508,8 @@ newtype GlpkCliqueCuts
  , glpkCliqueCutsOff = GLP_OFF
  }
 
-newtype GlpkMIPPresolve
-  = GlpkMIPPresolve { fromGlpkMIPPresolve :: CInt }
+newtype GlpkPresolve
+  = GlpkPresolve { fromGlpkPresolve :: CInt }
   deriving
     ( Show
     , Read
@@ -518,10 +518,10 @@ newtype GlpkMIPPresolve
     )
 
 #{enum
-   GlpkMIPPresolve
- , GlpkMIPPresolve
- , glpkMIPPresolveOn = GLP_ON
- , glpkMIPPresolveOff = GLP_OFF
+   GlpkPresolve
+ , GlpkPresolve
+ , glpkPresolveOn = GLP_ON
+ , glpkPresolveOff = GLP_OFF
  }
 
 newtype GlpkBinarization
@@ -769,6 +769,9 @@ newtype GlpkFactorizationType
  , glpkBTSchurGivensRotation = GLP_BF_BTF + GLP_BF_GR
  }
 
+-- | Control parameters for basis factorization.
+--
+-- This represents the `glp_bfcp` struct.
 data BasisFactorizationControlParameters
   = BasisFactorizationControlParameters
     { bfcpType :: GlpkFactorizationType
@@ -794,4 +797,43 @@ defaultBasisFactorizationControlParameters
     , bfcpNFSMax = 100
     , bfcpUpdateTolerance = 1e-6
     , bfcpNRSMax = 100
+    }
+
+data SimplexMethodControlParameters
+  = SimplexMethodControlParameters
+  { smcpMessageLevel :: GlpkMessageLevel
+  , smcpMethod :: GlpkSimplexMethod
+  , smcpPricing :: GlpkPricing
+  , smcpRatioTest :: GlpkRatioTest
+  , smcpPrimalFeasibilityTolerance :: Double
+  , smcpDualFeasibilityTolerance :: Double
+  , smcpPivotTolerance :: Double
+  , smcpLowerObjectiveLimit :: Double
+  , smcpUpperObjectiveLimit :: Double
+  , smcpIterationLimit :: CInt
+  , smcpTimeLimitMillis :: CInt
+  , smcpOutputFrequencyMillis :: CInt
+  , smcpOutputDelayMillis :: CInt
+  , smcpPresolve :: GlpkPresolve
+  }
+  deriving
+    ( Show
+    )
+
+defaultSimplexMethodControlParameters
+  = SimplexMethodControlParameters
+    { smcpMessageLevel = glpkMessageAll
+    , smcpMethod = glpkPrimalSimplex
+    , smcpPricing = glpkProjectedSteepestEdge
+    , smcpRatioTest = glpkHarrisTwoPassRatioTest
+    , smcpPrimalFeasibilityTolerance = 1e-7
+    , smcpDualFeasibilityTolerance = 1e-7
+    , smcpPivotTolerance = 1e-9
+    , smcpLowerObjectiveLimit = -1e308
+    , smcpUpperObjectiveLimit = 1e308
+    , smcpIterationLimit = maxBound
+    , smcpTimeLimitMillis = minBound
+    , smcpOutputFrequencyMillis = 500
+    , smcpOutputDelayMillis = 0
+    , smcpPresolve = glpkPresolveOff
     }
