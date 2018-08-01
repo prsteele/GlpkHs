@@ -134,6 +134,19 @@ foreign import ccall "glp_set_bfcp" glp_set_bfcp
   -> Ptr BasisFactorizationControlParameters
   -> IO ()
 
+foreign import ccall "glp_interior" glp_interior
+  :: Ptr Problem
+  -> Ptr InteriorPointControlParameters
+  -> IO GlpkInteriorPointStatus
+
+foreign import ccall "glp_init_iptcp" glp_init_iptcp
+  :: Ptr InteriorPointControlParameters
+  -> IO ()
+
+foreign import ccall "glp_ipt_status" glp_ipt_status
+  :: Ptr InteriorPointControlParameters
+  -> IO GlpkSolutionStatus
+
 newtype GlpkMajorVersion = GlpkMajorVersion { fromGlpkMajorVersion :: CInt }
   deriving
     ( Eq
@@ -379,6 +392,7 @@ newtype GlpkPreCholeskyOrdering
   = GlpkPreCholeskyOrdering { fromGlpkPreCholeskyOrdering :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
@@ -896,6 +910,18 @@ data SmcpFooBar
 
 instance FixedLength SmcpFooBar where
   fixedLength _ = 33
+
+data InteriorPointControlParameters
+  = InteriorPointControlParameters
+  { iptcpMessageLevel :: GlpkMessageLevel
+  , iptcpOrderingAlgorithm :: GlpkPreCholeskyOrdering
+  , iptcpFooBar :: Unused (FixedLengthArray IptcpFooBar CDouble)
+  }
+
+data IptcpFooBar
+
+instance FixedLength IptcpFooBar where
+  fixedLength _ = 48
 
 -- A type used to represent an unused or undocumented struct member.
 newtype Unused a
