@@ -16,8 +16,6 @@ import Foreign.Storable.Generic
 
 data Problem
 
-type ProblemPtr = Ptr Problem
-
 -- | An array whose data begins at index 1
 newtype GlpkArray a
   = GlpkArray { fromGplkArray :: Ptr a }
@@ -59,20 +57,20 @@ newtype ConstraintIndex
     )
 
 foreign import ccall "glp_create_prob" glp_create_prob
-  :: IO ProblemPtr
+  :: IO (Ptr Problem)
 
 foreign import ccall "glp_add_cols" glp_add_cols
-  :: ProblemPtr
+  :: Ptr Problem
   -> CInt
   -> IO VariableIndex
 
 foreign import ccall "glp_add_rows" glp_add_rows
-  :: ProblemPtr
+  :: Ptr Problem
   -> CInt
   -> IO ConstraintIndex
 
 foreign import ccall "glp_set_row_bnds" glp_set_row_bnds
-  :: ProblemPtr
+  :: Ptr Problem
   -> ConstraintIndex
   -> GlpkConstraintType
   -> CDouble
@@ -80,7 +78,7 @@ foreign import ccall "glp_set_row_bnds" glp_set_row_bnds
   -> IO ()
 
 foreign import ccall "glp_set_col_bnds" glp_set_col_bnds
-  :: ProblemPtr
+  :: Ptr Problem
   -> VariableIndex
   -> GlpkConstraintType
   -> CDouble
@@ -88,13 +86,13 @@ foreign import ccall "glp_set_col_bnds" glp_set_col_bnds
   -> IO ()
 
 foreign import ccall "glp_set_obj_coef" glp_set_obj_coef
-  :: ProblemPtr
+  :: Ptr Problem
   -> VariableIndex
   -> CDouble
   -> IO ()
 
 foreign import ccall "glp_set_mat_row" glp_set_mat_row
-  :: ProblemPtr
+  :: Ptr Problem
   -> ConstraintIndex
   -> CInt
   -> GlpkArray VariableIndex
@@ -102,7 +100,7 @@ foreign import ccall "glp_set_mat_row" glp_set_mat_row
   -> IO ()
 
 foreign import ccall "glp_set_mat_col" glp_set_mat_col
-  :: ProblemPtr
+  :: Ptr Problem
   -> VariableIndex
   -> CInt
   -> Ptr ConstraintIndex
@@ -110,13 +108,13 @@ foreign import ccall "glp_set_mat_col" glp_set_mat_col
   -> IO ()
 
 foreign import ccall "glp_write_lp" glp_write_lp
-  :: ProblemPtr
+  :: Ptr Problem
   -> Ptr CInt
   -> CString
   -> IO ()
 
 foreign import ccall "glp_simplex" glp_simplex
-  :: ProblemPtr
+  :: Ptr Problem
   -> Ptr SimplexMethodControlParameters
   -> IO CInt
 
