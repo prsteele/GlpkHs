@@ -1,12 +1,16 @@
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE ForeignFunctionInterface #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module Math.Programming.Glpk.Header where
 
+import GHC.Generics (Generic)
 import Foreign.C
 import Foreign.C.Types
 import Foreign.Marshal.Array
 import Foreign.Ptr
 import Foreign.Storable
+import Foreign.Storable.Generic
 
 #include <glpk.h>
 
@@ -115,8 +119,12 @@ foreign import ccall "glp_write_lp" glp_write_lp
 
 foreign import ccall "glp_simplex" glp_simplex
   :: ProblemPtr
-  -> Ptr CInt
+  -> Ptr SimplexMethodControlParameters
   -> IO CInt
+
+foreign import ccall "glp_init_smcp" glp_init_smcp
+  :: Ptr SimplexMethodControlParameters
+  -> IO ()
 
 newtype GlpkMajorVersion = GlpkMajorVersion { fromGlpkMajorVersion :: CInt }
   deriving
@@ -286,6 +294,7 @@ newtype GlpkMessageLevel
   = GlpkMessageLevel { fromGlpkMessageLevel :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
@@ -306,6 +315,7 @@ newtype GlpkSimplexMethod
   = GlpkSimplexMethod { fromGlpkSimplexMethod :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
@@ -324,6 +334,7 @@ newtype GlpkPricing
   = GlpkPricing { fromGlpkPricing :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
@@ -342,6 +353,7 @@ newtype GlpkRatioTest
   = GlpkRatioTest { fromGlpkRatioTest :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
@@ -537,6 +549,7 @@ newtype GlpkPresolve
   = GlpkPresolve { fromGlpkPresolve :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
@@ -854,25 +867,60 @@ data SimplexMethodControlParameters
   , smcpOutputFrequencyMillis :: CInt
   , smcpOutputDelayMillis :: CInt
   , smcpPresolve :: GlpkPresolve
+  , smcpExcl :: Unused CInt
+  , smcpShift :: Unused CInt
+  , smcpAOrN :: Unused CInt
+  , smcpFooBar :: Unused (FixedLengthArray SmcpFooBar CDouble)
   }
   deriving
-    ( Show
+    ( Eq
+    , Generic
+    , Show
     )
 
-defaultSimplexMethodControlParameters
-  = SimplexMethodControlParameters
-    { smcpMessageLevel = glpkMessageAll
-    , smcpMethod = glpkPrimalSimplex
-    , smcpPricing = glpkProjectedSteepestEdge
-    , smcpRatioTest = glpkHarrisTwoPassRatioTest
-    , smcpPrimalFeasibilityTolerance = 1e-7
-    , smcpDualFeasibilityTolerance = 1e-7
-    , smcpPivotTolerance = 1e-9
-    , smcpLowerObjectiveLimit = -1e308
-    , smcpUpperObjectiveLimit = 1e308
-    , smcpIterationLimit = maxBound
-    , smcpTimeLimitMillis = minBound
-    , smcpOutputFrequencyMillis = 500
-    , smcpOutputDelayMillis = 0
-    , smcpPresolve = glpkPresolveOff
-    }
+instance GStorable SimplexMethodControlParameters
+
+data SmcpFooBar
+
+instance FixedLength SmcpFooBar where
+  fixedLength _ = 33
+
+-- A type used to represent an unused or undocumented struct member.
+newtype Unused a
+  = Unused { fromUnused :: a }
+  deriving
+    ( Enum
+    , Eq
+    , GStorable
+    , Ord
+    , Read
+    , Show
+    , Storable
+    )
+
+-- | The class of arrays of fixed length.
+class FixedLength a where
+  fixedLength :: a -> Int
+
+-- | A type representing fixed-length array members of structs.
+newtype FixedLengthArray a b
+  = FixedLengthArray { fromFixedLengthArray :: [b] }
+  deriving
+    ( Eq
+    , Ord
+    , Read
+    , Show
+    )
+
+instance (FixedLength a, Storable b) => GStorable (FixedLengthArray a b) where
+  gsizeOf _ = (fixedLength (undefined :: a)) * (sizeOf (undefined :: b))
+
+  galignment _ = alignment (undefined :: b)
+
+  gpeekByteOff ptr offset
+    = FixedLengthArray <$> peekArray arrayLength (plusPtr ptr offset)
+    where
+      arrayLength = fixedLength (undefined :: a)
+
+  gpokeByteOff ptr offset (FixedLengthArray array)
+    = pokeArray (plusPtr ptr offset) array
