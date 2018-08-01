@@ -124,6 +124,16 @@ foreign import ccall "glp_init_smcp" glp_init_smcp
   :: Ptr SimplexMethodControlParameters
   -> IO ()
 
+foreign import ccall "glp_get_bfcp" glp_get_bfcp
+  :: Ptr Problem
+  -> Ptr BasisFactorizationControlParameters
+  -> IO ()
+
+foreign import ccall "glp_set_bfcp" glp_set_bfcp
+  :: Ptr Problem
+  -> Ptr BasisFactorizationControlParameters
+  -> IO ()
+
 newtype GlpkMajorVersion = GlpkMajorVersion { fromGlpkMajorVersion :: CInt }
   deriving
     ( Eq
@@ -619,6 +629,7 @@ newtype GlpkControl
   = GlpkControl { fromGlpkControl :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
@@ -803,6 +814,7 @@ newtype GlpkFactorizationType
   = GlpkFactorizationType { fromGlpkFactorizationType :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
@@ -824,30 +836,32 @@ newtype GlpkFactorizationType
 -- This represents the `glp_bfcp` struct.
 data BasisFactorizationControlParameters
   = BasisFactorizationControlParameters
-    { bfcpType :: GlpkFactorizationType
+    { bfcpMessageLevel :: Unused GlpkMessageLevel
+    , bfcpType :: GlpkFactorizationType
+    , bfcpLUSize :: Unused CInt
     , bfcpPivotTolerance :: CDouble
     , bfcpPivotLimit :: CInt
     , bfcpSuhl :: GlpkControl
     , bfcpEpsilonTolerance :: CDouble
-    , bfcpNFSMax :: CInt
-    , bfcpUpdateTolerance :: CDouble
-    , bfcpNRSMax :: CInt
+    , bfcpMaxGro :: Unused CDouble
+    , bfcpNfsMax :: CInt
+    , bfcpUpdateTolerance :: Unused CDouble
+    , bfcpNrsMax :: CInt
+    , bfcpRsSize :: Unused CInt
+    , bfcpFooBar :: Unused (FixedLengthArray BfcpFooBar CDouble)
     }
   deriving
-    ( Show
+    ( Eq
+    , Generic
+    , Show
     )
 
-defaultBasisFactorizationControlParameters
-  = BasisFactorizationControlParameters
-    { bfcpType = glpkLUForrestTomlin
-    , bfcpPivotTolerance = 0.1
-    , bfcpPivotLimit = 4
-    , bfcpSuhl = glpkOn
-    , bfcpEpsilonTolerance = 1e-15
-    , bfcpNFSMax = 100
-    , bfcpUpdateTolerance = 1e-6
-    , bfcpNRSMax = 100
-    }
+instance GStorable BasisFactorizationControlParameters
+
+data BfcpFooBar
+
+instance FixedLength BfcpFooBar where
+  fixedLength _ = 38
 
 data SimplexMethodControlParameters
   = SimplexMethodControlParameters
