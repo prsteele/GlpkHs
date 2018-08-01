@@ -18,6 +18,16 @@ data Problem
 
 type ProblemPtr = Ptr Problem
 
+-- | An array whose data begins at index 1
+newtype GlpkArray a
+  = GlpkArray { fromGplkArray :: Ptr a }
+  deriving
+    ( Eq
+    , Ord
+    , Show
+    , Storable
+    )
+
 mkGlpkArray :: Storable a => [a] -> IO (GlpkArray a)
 mkGlpkArray xs = do
   let aSize :: Int
@@ -25,18 +35,6 @@ mkGlpkArray xs = do
   array <- mallocArray (1 + length xs)
   pokeArray (plusPtr array aSize) xs
   return $ GlpkArray array
-
--- | An array whose data begins at index 1
-newtype GlpkArray a
-  = GlpkArray
-  { fromGplkArray :: Ptr a
-  }
-  deriving
-    ( Eq
-    , Ord
-    , Show
-    , Storable
-    )
 
 newtype VariableIndex
   = VariableIndex { fromVariableIndex :: CInt}
