@@ -6,6 +6,7 @@ import Foreign.C.String
 import Foreign.Ptr
 import Foreign.Marshal.Alloc
 import Foreign.Marshal.Array
+import Foreign.Storable
 import Text.Printf
 
 import Math.Programming.Glpk.Header
@@ -39,7 +40,19 @@ main = do
 
   withCString "example.lp" (glp_write_lp problem nullPtr)
 
-  status <- glp_simplex problem nullPtr
+  bfcp <- alloca $ \ptr -> do
+    glp_get_bfcp problem ptr
+    peek ptr
+
+  print bfcp
+
+  control <- malloc
+  glp_init_smcp control
+  status <- glp_simplex problem control
+  controlp <- peek control
+  free control
+
+  print controlp
 
   putStrLn $ printf "Finished with status %i" (fromIntegral status :: Int)
   
