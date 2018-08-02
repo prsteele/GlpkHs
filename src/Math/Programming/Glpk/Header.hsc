@@ -145,7 +145,8 @@ foreign import ccall "glp_ipt_status" glp_ipt_status
   :: Ptr InteriorPointControlParameters
   -> IO GlpkSolutionStatus
 
-newtype GlpkMajorVersion = GlpkMajorVersion { fromGlpkMajorVersion :: CInt }
+newtype GlpkMajorVersion
+  = GlpkMajorVersion { fromGlpkMajorVersion :: CInt }
   deriving
     ( Eq
     , Ord
@@ -154,7 +155,8 @@ newtype GlpkMajorVersion = GlpkMajorVersion { fromGlpkMajorVersion :: CInt }
     , Storable
     )
 
-newtype GlpkMinorVersion = GlpkMinorVersion { fromGlpkMinorVersion :: CInt }
+newtype GlpkMinorVersion
+  = GlpkMinorVersion { fromGlpkMinorVersion :: CInt }
   deriving
     ( Eq
     , Ord
@@ -877,25 +879,25 @@ instance FixedLength BfcpFooBar where
 
 data SimplexMethodControlParameters
   = SimplexMethodControlParameters
-  { smcpMessageLevel :: GlpkMessageLevel
-  , smcpMethod :: GlpkSimplexMethod
-  , smcpPricing :: GlpkPricing
-  , smcpRatioTest :: GlpkRatioTest
-  , smcpPrimalFeasibilityTolerance :: Double
-  , smcpDualFeasibilityTolerance :: Double
-  , smcpPivotTolerance :: Double
-  , smcpLowerObjectiveLimit :: Double
-  , smcpUpperObjectiveLimit :: Double
-  , smcpIterationLimit :: CInt
-  , smcpTimeLimitMillis :: CInt
-  , smcpOutputFrequencyMillis :: CInt
-  , smcpOutputDelayMillis :: CInt
-  , smcpPresolve :: GlpkPresolve
-  , smcpExcl :: Unused CInt
-  , smcpShift :: Unused CInt
-  , smcpAOrN :: Unused CInt
-  , smcpFooBar :: Unused (FixedLengthArray SmcpFooBar CDouble)
-  }
+    { smcpMessageLevel :: GlpkMessageLevel
+    , smcpMethod :: GlpkSimplexMethod
+    , smcpPricing :: GlpkPricing
+    , smcpRatioTest :: GlpkRatioTest
+    , smcpPrimalFeasibilityTolerance :: Double
+    , smcpDualFeasibilityTolerance :: Double
+    , smcpPivotTolerance :: Double
+    , smcpLowerObjectiveLimit :: Double
+    , smcpUpperObjectiveLimit :: Double
+    , smcpIterationLimit :: CInt
+    , smcpTimeLimitMillis :: CInt
+    , smcpOutputFrequencyMillis :: CInt
+    , smcpOutputDelayMillis :: CInt
+    , smcpPresolve :: GlpkPresolve
+    , smcpExcl :: Unused CInt
+    , smcpShift :: Unused CInt
+    , smcpAOrN :: Unused CInt
+    , smcpFooBar :: Unused (FixedLengthArray SmcpFooBar CDouble)
+    }
   deriving
     ( Eq
     , Generic
@@ -911,10 +913,10 @@ instance FixedLength SmcpFooBar where
 
 data InteriorPointControlParameters
   = InteriorPointControlParameters
-  { iptcpMessageLevel :: GlpkMessageLevel
-  , iptcpOrderingAlgorithm :: GlpkPreCholeskyOrdering
-  , iptcpFooBar :: Unused (FixedLengthArray IptcpFooBar CDouble)
-  }
+    { iptcpMessageLevel :: GlpkMessageLevel
+    , iptcpOrderingAlgorithm :: GlpkPreCholeskyOrdering
+    , iptcpFooBar :: Unused (FixedLengthArray IptcpFooBar CDouble)
+    }
 
 data IptcpFooBar
 
