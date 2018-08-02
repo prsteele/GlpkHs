@@ -54,9 +54,13 @@ main = do
     glp_init_smcp simplexControl
     glp_simplex problem simplexControl >>= print
 
-  GlpkMIPStatus mipStatus <- alloca $ \mipControl -> do
-    glp_init_iocp mipControl
-    glp_intopt problem mipControl
+  GlpkMIPStatus mipStatus <- alloca $ \mipControlPtr -> do
+    glp_init_iocp mipControlPtr
+
+    mipControl <- peek mipControlPtr
+    poke mipControlPtr $ mipControl { iocpPresolve = glpkPresolveOn }
+
+    glp_intopt problem mipControlPtr
 
   putStrLn $ printf "Finished with status %i" (fromIntegral mipStatus :: Int)
 
