@@ -22,8 +22,12 @@ main = do
   x_index <- glp_add_cols problem 2
   let y_index = succ x_index
 
-  -- Set the constraint  
-  glp_set_row_bnds problem row glpkLT 0 4
+  -- Make the variables integer
+  glp_set_col_kind problem x_index glpkInteger
+  glp_set_col_kind problem y_index glpkInteger
+
+  -- Set the constraint
+  glp_set_row_bnds problem row glpkLT 0.1 4
 
   indices <- mkGlpkArray [x_index, y_index]
 
@@ -46,14 +50,14 @@ main = do
 
   print bfcp
 
-  control <- malloc
-  glp_init_smcp control
-  status <- glp_simplex problem control
-  controlp <- peek control
-  free control
+  alloca $ \simplexControl -> do
+    glp_init_smcp simplexControl
+    glp_simplex problem simplexControl >>= print
 
-  print controlp
+  GlpkMIPStatus mipStatus <- alloca $ \mipControl -> do
+    glp_init_iocp mipControl
+    glp_intopt problem mipControl
 
-  putStrLn $ printf "Finished with status %i" (fromIntegral status :: Int)
-  
+  putStrLn $ printf "Finished with status %i" (fromIntegral mipStatus :: Int)
+
   return ()
