@@ -267,6 +267,17 @@ foreign import ccall "glp_ios_terminate" glp_ios_terminate
   :: Ptr (GlpkTree a)
   -> IO ()
 
+foreign import ccall "glp_set_col_kind" glp_set_col_kind
+  :: Ptr Problem
+  -> VariableIndex
+  -> GlpkVariableType
+  -> IO ()
+
+foreign import ccall "glp_get_col_kind" glp_vet_col_kind
+  :: Ptr Problem
+  -> VariableIndex
+  -> IO GlpkVariableType
+
 newtype GlpkMajorVersion
   = GlpkMajorVersion { fromGlpkMajorVersion :: CInt }
   deriving
@@ -320,6 +331,7 @@ newtype GlpkVariableType
   = GlpkVariableType { fromGlpkVariableType :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
