@@ -6,6 +6,7 @@ module Math.Programming.Glpk.Header where
 
 import GHC.Generics (Generic)
 import Foreign.C
+import Foreign.C.String
 import Foreign.C.Types
 import Foreign.Marshal.Array
 import Foreign.Ptr
@@ -144,6 +145,127 @@ foreign import ccall "glp_init_iptcp" glp_init_iptcp
 foreign import ccall "glp_ipt_status" glp_ipt_status
   :: Ptr InteriorPointControlParameters
   -> IO GlpkSolutionStatus
+
+foreign import ccall "glp_intopt" glp_intopt
+  :: Ptr Problem
+  -> Ptr (MIPControlParameters a)
+  -> IO GlpkMIPStatus
+
+foreign import ccall "glp_init_iocp" glp_init_iocp
+  :: Ptr (MIPControlParameters a)
+  -> IO ()
+
+foreign import ccall "glp_ios_reason" glp_ios_reason
+  :: Ptr (GlpkTree a)
+  -> IO GlpkCallbackReason
+
+foreign import ccall "glp_ios_get_prob" glp_ios_get_prob
+  :: Ptr (GlpkTree a)
+  -> IO (Ptr Problem)
+
+foreign import ccall "glp_ios_tree_size" glp_ios_tree_size
+  :: Ptr (GlpkTree a)
+  -> Ptr CInt
+  -> Ptr CInt
+  -> Ptr CInt
+  -> IO ()
+
+foreign import ccall "glp_ios_curr_node" glp_ios_curr_node
+  :: Ptr (GlpkTree a)
+  -> IO CInt
+
+foreign import ccall "glp_ios_next_node" glp_ios_next_node
+  :: Ptr (GlpkTree a)
+  -> CInt
+  -> IO CInt
+
+foreign import ccall "glp_ios_prev_node" glp_ios_prev_node
+  :: Ptr (GlpkTree a)
+  -> CInt
+  -> IO CInt
+
+foreign import ccall "glp_ios_up_node" glp_ios_up_node
+  :: Ptr (GlpkTree a)
+  -> CInt
+  -> IO CInt
+
+foreign import ccall "glp_ios_node_level" glp_ios_node_level
+  :: Ptr (GlpkTree a)
+  -> CInt
+  -> IO CInt
+
+foreign import ccall "glp_ios_node_bound" glp_ios_node_bound
+  :: Ptr (GlpkTree a)
+  -> CInt
+  -> IO CDouble
+
+foreign import ccall "glp_ios_best_node" glp_ios_best_node
+  :: Ptr (GlpkTree a)
+  -> IO CInt
+
+foreign import ccall "glp_ios_mip_gap" glp_ios_mip_gap
+  :: Ptr (GlpkTree a)
+  -> IO CDouble
+
+foreign import ccall "glp_ios_node_data" glp_ios_node_data
+  :: Ptr (GlpkTree a)
+  -> IO (Ptr a)
+
+foreign import ccall "glp_ios_row_attr" glp_ios_row_attr
+  :: Ptr (GlpkTree a)
+  -> CInt
+  -> Ptr GlpkCutAttribute
+  -> IO ()
+
+foreign import ccall "glp_ios_pool_size" glp_ios_pool_size
+  :: Ptr (GlpkTree a)
+  -> IO CInt
+
+foreign import ccall "glp_ios_add_row" glp_ios_add_row
+  :: Ptr (GlpkTree a)
+  -> CString
+  -> CInt
+  -> CInt
+  -> CInt
+  -> CInt
+  -> Ptr CInt
+  -> Ptr CDouble
+  -> CInt
+  -> CDouble
+  -> IO ()
+
+foreign import ccall "glp_ios_del_row" glp_ios_del_row
+  :: Ptr (GlpkTree a)
+  -> CInt
+  -> IO ()
+
+foreign import ccall "glp_ios_clear_pool" glp_ios_clear_pool
+  :: Ptr (GlpkTree a)
+  -> IO ()
+
+foreign import ccall "glp_ios_can_branch" glp_ios_can_branch
+  :: Ptr (GlpkTree a)
+  -> VariableIndex
+
+foreign import ccall "glp_ios_branch_upon" glp_ios_branch_upon
+  :: Ptr (GlpkTree a)
+  -> VariableIndex
+  -> GlpkBranchOption
+  -> IO ()
+
+foreign import ccall "glp_ios_select_node" glp_ios_select_node
+  :: Ptr (GlpkTree a)
+  -> CInt
+  -> IO ()
+
+foreign import ccall "glp_ios_heur_sol" glp_ios_heur_sol
+  :: Ptr (GlpkTree a)
+  -> Ptr CDouble
+  -> IO ()
+
+foreign import ccall "glp_ios_terminate" glp_ios_terminate
+  :: Ptr (GlpkTree a)
+  -> IO ()
 
 newtype GlpkMajorVersion
   = GlpkMajorVersion { fromGlpkMajorVersion :: CInt }
@@ -412,6 +534,7 @@ newtype GlpkBranchingTechnique
   = GlpkBranchingTechnique { fromGlpkBranchingTechnique :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
@@ -432,6 +555,7 @@ newtype GlpkBacktrackingTechnique
   = GlpkBacktrackingTechnique { fromGlpkBacktrackingTechnique :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
@@ -447,10 +571,11 @@ newtype GlpkBacktrackingTechnique
  , glpkBestProjectionHeuristic = GLP_BT_BPH
  }
 
-newtype GlpkPostProcessingTechnique
-  = GlpkPostProcessingTechnique { fromGlpkPostProcessingTechnique :: CInt }
+newtype GlpkPreProcessingTechnique
+  = GlpkPreProcessingTechnique { fromGlpkPreProcessingTechnique :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
@@ -458,17 +583,18 @@ newtype GlpkPostProcessingTechnique
     )
 
 #{enum
-   GlpkPostProcessingTechnique
- , GlpkPostProcessingTechnique
- , glpkPostProcessNone = GLP_PP_NONE
- , glpkPostProcessRoot = GLP_PP_ROOT
- , glpkPostProcessAll = GLP_PP_ALL
+   GlpkPreProcessingTechnique
+ , GlpkPreProcessingTechnique
+ , glpkPreProcessNone = GLP_PP_NONE
+ , glpkPreProcessRoot = GLP_PP_ROOT
+ , glpkPreProcessAll = GLP_PP_ALL
  }
 
 newtype GlpkFeasibilityPump
   = GlpkFeasibilityPump { fromGlpkFeasibilityPump :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
@@ -486,6 +612,7 @@ newtype GlpkProximitySearch
   = GlpkProximitySearch { fromGlpkProximitySearch :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
@@ -503,6 +630,7 @@ newtype GlpkGomoryCuts
   = GlpkGomoryCuts { fromGlpkGomoryCuts :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
@@ -520,6 +648,7 @@ newtype GlpkMIRCuts
   = GlpkMIRCuts { fromGlpkMIRCuts :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
@@ -537,6 +666,7 @@ newtype GlpkCoverCuts
   = GlpkCoverCuts { fromGlpkCoverCuts :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
@@ -554,6 +684,7 @@ newtype GlpkCliqueCuts
   = GlpkCliqueCuts { fromGlpkCliqueCuts :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
@@ -589,6 +720,7 @@ newtype GlpkBinarization
   = GlpkBinarization { fromGlpkBinarization :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
@@ -602,10 +734,29 @@ newtype GlpkBinarization
  , glpkBinarizationOff = GLP_OFF
  }
 
+newtype GlpkSimpleRounding
+  = GlpkSimpleRounding { fromGlpkSimpleRounding :: CInt }
+  deriving
+    ( Eq
+    , GStorable
+    , Ord
+    , Read
+    , Show
+    , Storable
+    )
+
+#{enum
+   GlpkSimpleRounding
+ , GlpkSimpleRounding
+ , glpkSimpleRoundingOn = GLP_ON
+ , glpkSimpleRoundingOff = GLP_OFF
+ }
+
 newtype GlpkConstraintOrigin
   = GlpkConstraintOrigin { fromGlpkConstraintOrigin :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
@@ -624,6 +775,7 @@ newtype GlpkCutType
   = GlpkCutType { fromGlpkCutType :: CInt }
   deriving
     ( Eq
+    , GStorable
     , Ord
     , Read
     , Show
@@ -917,13 +1069,84 @@ data InteriorPointControlParameters
     , iptcpOrderingAlgorithm :: GlpkPreCholeskyOrdering
     , iptcpFooBar :: Unused (FixedLengthArray IptcpFooBar CDouble)
     }
+  deriving
+    ( Eq
+    , Generic
+    , Show
+    )
+
+instance GStorable InteriorPointControlParameters
 
 data IptcpFooBar
 
-data GlpkTree
-
 instance FixedLength IptcpFooBar where
   fixedLength _ = 48
+
+data GlpkTree a
+
+data MIPControlParameters a
+  = MIPControlParameters
+    { iocpMessageLevel :: GlpkMessageLevel
+    , iocpBranchingTechnique :: GlpkBranchingTechnique
+    , iocpBacktrackingTechnique :: GlpkBacktrackingTechnique
+    , iocpAbsoluteFeasibilityTolerance :: CDouble
+    , iocpRelativeObjectiveTolerance :: CDouble
+    , iocpTimeLimitMillis :: CInt
+    , iocpOutputFrequencyMillis :: CInt
+    , iocpOutputDelayMillis :: CInt
+    , iocpCallback :: FunPtr (Ptr (GlpkTree a) -> Ptr a -> IO ())
+    , iocpNodeData :: Ptr a
+    , iocpNodeDataSize :: CInt
+    , iocpPreprocessingTechnique :: GlpkPreProcessingTechnique
+    , iocpRelativeMIPGap :: CDouble
+    , iocpMIRCuts :: GlpkMIRCuts
+    , iocpGormoryCuts :: GlpkGomoryCuts
+    , iocpCoverCuts :: GlpkCoverCuts
+    , iocpCliqueCuts :: GlpkCliqueCuts
+    , iocpPresolve :: GlpkPresolve
+    , iocpBinarization :: GlpkBinarization
+    , iocpFeasibilityPump :: GlpkFeasibilityPump
+    , iocpProximitySearch :: GlpkProximitySearch
+    , iocpProximityTimeLimitMillis :: CInt
+    , iocpSimpleRounding :: GlpkSimpleRounding
+    , iocpUseExistingSolution :: Unused CInt
+    , iocpNewSolutionFileName :: Unused (Ptr CChar)
+    , iocpUseAlienSolver :: Unused CInt
+    , iocpUseLongStepDual :: Unused CInt
+    , iocpFooBar :: Unused (FixedLengthArray IocpFooBar CDouble)
+    }
+  deriving
+    ( Eq
+    , Generic
+    , Show
+    )
+
+instance GStorable (MIPControlParameters a)
+
+data IocpFooBar
+
+instance FixedLength IocpFooBar where
+  fixedLength _ = 23
+
+data GlpkCutAttribute
+  = GlpkCutAttribute
+    { attrLevel :: CInt
+    , attrContraintOrigin :: GlpkConstraintOrigin
+    , attrCutType :: GlpkCutType
+    , attrFooBar :: Unused (FixedLengthArray AttrFooBar CDouble)
+    }
+  deriving
+    ( Eq
+    , Generic
+    , Show
+    )
+
+instance GStorable GlpkCutAttribute
+
+data AttrFooBar
+
+instance FixedLength AttrFooBar where
+  fixedLength _ = 7
 
 -- A type used to represent an unused or undocumented struct member.
 newtype Unused a
