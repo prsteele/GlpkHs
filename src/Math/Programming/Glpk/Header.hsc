@@ -918,6 +918,8 @@ data InteriorPointControlParameters
 
 data IptcpFooBar
 
+data GlpkTree
+
 instance FixedLength IptcpFooBar where
   fixedLength _ = 48
 
