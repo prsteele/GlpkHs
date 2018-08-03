@@ -353,6 +353,95 @@ foreign import ccall "glp_get_num_nz" glp_get_num_nz
   -> IO CInt
   -- ^ The number of nonzero constraint coefficients
 
+foreign import ccall "glp_get_mat_row" glp_get_mat_row
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> ConstraintIndex
+  -- ^ The constraint to retrieve
+  -> GlpkArray VariableIndex
+  -- ^ The variable indices in the constraint
+  -> GlpkArray CDouble
+  -- ^ The variable coefficients in the constraint
+  -> IO CInt
+  -- ^ The length of the arrays
+
+foreign import ccall "glp_get_mat_col" glp_get_mat_col
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> VariableIndex
+  -- ^ The constraint to retrieve
+  -> GlpkArray ConstrainteIndex
+  -- ^ The constraint indices the variable is in
+  -> GlpkArray CDouble
+  -- ^ The constraint coefficients for the variable
+  -> IO CInt
+  -- ^ The length of the arrays
+
+foreign import ccall "glp_create_index" glp_create_index
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO ()
+
+foreign import ccall "glp_delete_index" glp_delete_index
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO ()
+
+foreign import ccall "glp_find_row" glp_find_row
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CString
+  -- ^ The name of the constraint
+  -> IO ConstraintIndex
+  -- ^ The index of the constraint
+
+foreign import ccall "glp_find_col" glp_find_col
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CString
+  -- ^ The name of the variable
+  -> IO VariableIndex
+  -- ^ The index of the variable
+
+foreign import ccall "glp_set_rii" glp_set_rii
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> ConstraintIndex
+  -- ^ The constraint to scale
+  -> CDouble
+  -- ^ The scaling factor
+  -> IO ()
+
+foreign import ccall "glp_get_rii" glp_set_rii
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> ConstraintIndex
+  -- ^ The constraint index
+  -> IO CDouble
+
+foreign import ccall "glp_set_sjj" glp_set_sjj
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> Variable
+  -- ^ The variable to scale
+  -> CDouble
+  -- ^ The scaling factor
+  -> IO ()
+
+foreign import ccall "glp_get_sjj" glp_set_sjj
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> VariableIndex
+  -- ^ The variable index
+  -> IO CDouble
+
+foreign import ccall "glp_scale_prob" glp_scale_prob
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> GlpkScaling
+  -- ^ The type of scaling to apply
+  -> IO ()
+
 foreign import ccall "glp_simplex" glp_simplex
   :: Ptr Problem
   -> Ptr SimplexMethodControlParameters
