@@ -144,24 +144,37 @@ foreign import ccall "glp_set_col_bnds" glp_set_col_bnds
 
 foreign import ccall "glp_set_obj_coef" glp_set_obj_coef
   :: Ptr Problem
+  -- ^ The problem instance
   -> VariableIndex
+  -- ^ The variable
   -> CDouble
+  -- ^ The objective coefficient
   -> IO ()
 
 foreign import ccall "glp_set_mat_row" glp_set_mat_row
   :: Ptr Problem
+  -- ^ The problem instance
   -> ConstraintIndex
+  -- ^ The constraint being modified
   -> CInt
+  -- ^ The number of variables being set
   -> GlpkArray VariableIndex
+  -- ^ The variables being set
   -> GlpkArray CDouble
+  -- ^ The variable coefficients
   -> IO ()
 
 foreign import ccall "glp_set_mat_col" glp_set_mat_col
   :: Ptr Problem
+  -- ^ The problem instance
   -> VariableIndex
+  -- ^ The variable being modified
   -> CInt
+  -- ^ The number of coefficients being set
   -> Ptr ConstraintIndex
+  -- ^ The constraints being modified
   -> GlpkArray CDouble
+  -- ^ The variable coefficients
   -> IO ()
 
 foreign import ccall "glp_simplex" glp_simplex
