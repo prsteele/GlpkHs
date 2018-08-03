@@ -61,6 +61,11 @@ foreign import ccall "glp_create_prob" glp_create_prob
   :: IO (Ptr Problem)
   -- ^ The allocated problem instance
 
+foreign import ccall "glp_delete_prob" glp_delete_prob
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO ()
+
 foreign import ccall "glp_set_prob_name" glp_set_prob_name
   :: Ptr Problem
   -- ^ The problem instance
@@ -224,6 +229,20 @@ foreign import ccall "glp_del_cols" glp_del_cols
   -- ^ The number of variables to delete
   -> GlpkArray VariableIndex
   -- ^ The indices of the variables to delete
+  -> IO ()
+
+foreign import ccall "glp_copy_prob" glp_copy_prob
+  :: Ptr Problem
+  -- ^ The destination problem instance
+  -> Ptr Problem
+  -- ^ The problem instance to be copied
+  -> GlpkControl
+  -- ^ Whether to copy symbolic names
+  -> IO ()
+
+foreign import ccall "glp_erase_prob" glp_erase_prob
+  :: Ptr Problem
+  -- ^ The problem instance
   -> IO ()
 
 foreign import ccall "glp_simplex" glp_simplex
