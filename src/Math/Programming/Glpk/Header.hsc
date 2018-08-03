@@ -177,6 +177,19 @@ foreign import ccall "glp_set_mat_col" glp_set_mat_col
   -- ^ The variable coefficients
   -> IO ()
 
+foreign import ccall "glp_load_matrix" glp_load_matrix
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CInt
+  -- ^ The number of nonzero elements to be loaded
+  -> GlpkArray ConstraintIndex
+  -- ^ The constraint indices
+  -> GlpkArray VariableIndex
+  -- ^ The variable indices
+  -> GlpkArray CDouble
+  -- ^ The coefficients
+  -> IO ()
+
 foreign import ccall "glp_simplex" glp_simplex
   :: Ptr Problem
   -> Ptr SimplexMethodControlParameters
