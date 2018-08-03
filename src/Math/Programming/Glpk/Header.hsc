@@ -59,16 +59,62 @@ newtype ConstraintIndex
 
 foreign import ccall "glp_create_prob" glp_create_prob
   :: IO (Ptr Problem)
+  -- ^ The allocated problem instance
 
-foreign import ccall "glp_add_cols" glp_add_cols
+foreign import ccall "glp_set_prob_name" glp_set_prob_name
   :: Ptr Problem
-  -> CInt
-  -> IO VariableIndex
+  -- ^ The problem instance
+  -> CString
+  -- ^ The problem name
+  -> IO ()
+
+foreign import ccall "glp_set_obj_name" glp_set_obj_name
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CString
+  -- ^ The objective name
+  -> IO ()
+
+foreign import ccall "glp_set_obj_dir" glp_set_obj_dir
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> GlpkDirection
+  -- ^ Whether the problem is a minimization or maximization problem
+  -> IO ()
 
 foreign import ccall "glp_add_rows" glp_add_rows
   :: Ptr Problem
+  -- ^ The problem instance
   -> CInt
+  -- ^ The number of constraints to add
   -> IO ConstraintIndex
+  -- ^ The index of the first new constraint added
+
+foreign import ccall "glp_add_cols" glp_add_cols
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CInt
+  -- ^ The number of variables to add
+  -> IO VariableIndex
+  -- ^ The index of the first new variable added
+
+foreign import ccall "glp_set_row_name" glp_set_row_name
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> ConstraintIndex
+  -- ^ The constraint being named
+  -> CString
+  -- ^ The name of the constraint
+  -> IO ()
+
+foreign import ccall "glp_set_col_name" glp_set_col_name
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> VariableIndex
+  -- ^ The variable being named
+  -> CString
+  -- ^ The name of the variable
+  -> IO ()
 
 foreign import ccall "glp_set_row_bnds" glp_set_row_bnds
   :: Ptr Problem
