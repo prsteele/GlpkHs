@@ -257,6 +257,102 @@ foreign import ccall "glp_get_obj_name" glp_get_obj_name
   -> IO CString
   -- ^ The name of the objective
 
+foreign import ccall "glp_get_obj_dir" glp_get_obj_dir
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO GlpkDirection
+  -- ^ The direction of the objective
+
+foreign import ccall "glp_get_num_rows" glp_get_num_rows
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO CInt
+  -- ^ The number of constraints
+
+foreign import ccall "glp_get_num_cols" glp_get_num_cols
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO CInt
+  -- ^ The number of variables
+
+foreign import ccall "glp_get_row_name" glp_get_row_name
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> ConstraintIndex
+  -- ^ The index of the constraint
+  -> IO CString
+  -- ^ The constraint name
+
+foreign import ccall "glp_get_col_name" glp_get_col_name
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> VariableIndex
+  -- ^ The index of the variable
+  -> IO CString
+  -- ^ The variable name
+
+foreign import ccall "glp_get_row_type" glp_get_row_type
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> ConstraintIndex
+  -- ^ The index of the constraint
+  -> IO GlpkConstraintType
+  -- ^ The constraint type
+
+foreign import ccall "glp_get_row_lb" glp_get_row_lb
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> ConstraintIndex
+  -- ^ The index of the constraint
+  -> IO CDouble
+  -- ^ The constraint lower bound
+
+foreign import ccall "glp_get_row_ub" glp_get_row_ub
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> ConstraintIndex
+  -- ^ The index of the constraint
+  -> IO CDouble
+  -- ^ The constraint upper bound
+
+foreign import ccall "glp_get_col_type" glp_get_col_type
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> VariableIndex
+  -- ^ The index of the variable
+  -> IO GlpkVariableType
+  -- ^ The constraint type
+
+foreign import ccall "glp_get_col_lb" glp_get_col_lb
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> VariableIndex
+  -- ^ The index of the variable
+  -> IO CDouble
+  -- ^ The variable lower bound
+
+foreign import ccall "glp_get_col_ub" glp_get_col_ub
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> VariableIndex
+  -- ^ The index of the variable
+  -> IO CDouble
+  -- ^ The variable upper bound
+
+foreign import ccall "glp_get_obj_coef" glp_get_obj_coef
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> VariableIndex
+  -- ^ The index of the variable
+  -> IO CDouble
+  -- ^ The objective coefficient
+
+foreign import ccall "glp_get_num_nz" glp_get_num_nz
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO CInt
+  -- ^ The number of nonzero constraint coefficients
+
 foreign import ccall "glp_simplex" glp_simplex
   :: Ptr Problem
   -> Ptr SimplexMethodControlParameters
