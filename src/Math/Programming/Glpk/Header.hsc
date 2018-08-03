@@ -337,6 +337,33 @@ foreign import ccall "glp_get_col_kind" glp_vet_col_kind
   -> VariableIndex
   -> IO GlpkVariableType
 
+foreign import ccall "glp_init_mpscp" glp_init_mpscp
+  :: Ptr MPSControlParameters
+  -- ^ The MPS control parameters to initialize
+  -> IO ()
+
+foreign import ccall "glp_read_mps" glp_read_mps
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> GlpkMPSFormat
+  -- ^ The MPS format to read
+  -> Ptr MPSControlParameters
+  -- ^ The MPS control parameters
+  -> CString
+  -- ^ The name of the file to read
+  -> IO ()
+
+foreign import ccall "glp_write_mps" glp_write_mps
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> GlpkMPSFormat
+  -- ^ The MPS format to read
+  -> Ptr MPSControlParameters
+  -- ^ The MPS control parameters
+  -> CString
+  -- ^ The name of the file to write to
+  -> IO ()
+
 newtype GlpkMajorVersion
   = GlpkMajorVersion { fromGlpkMajorVersion :: CInt }
   deriving
@@ -1242,6 +1269,26 @@ newtype GlpkUserCutType
     , Show
     , Storable
     )
+
+data MPSControlParameters
+  = MPSControlParameters
+    { mpscpBlank :: CInt
+    , mpscpObjectiveName :: CString
+    , mpscpZeroTolerance :: CDouble
+    , mpscpFooBar :: Unused (FixedLengthArray MpscpFooBar CDouble)
+    }
+  deriving
+    ( Eq
+    , Generic
+    , Show
+    )
+
+instance GStorable MPSControlParameters
+
+data MpscpFooBar
+
+instance FixedLength MpscpFooBar where
+  fixedLength _ = 17
 
 -- A type used to represent an unused or undocumented struct member.
 newtype Unused a
