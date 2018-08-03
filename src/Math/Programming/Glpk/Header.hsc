@@ -157,114 +157,173 @@ foreign import ccall "glp_init_iocp" glp_init_iocp
 
 foreign import ccall "glp_ios_reason" glp_ios_reason
   :: Ptr (GlpkTree a)
+  -- ^ The search tree
   -> IO GlpkCallbackReason
+  -- ^ The reason the callback is being called
 
 foreign import ccall "glp_ios_get_prob" glp_ios_get_prob
   :: Ptr (GlpkTree a)
+  -- ^ The search tree
   -> IO (Ptr Problem)
+  -- ^ The active problem
 
 foreign import ccall "glp_ios_tree_size" glp_ios_tree_size
   :: Ptr (GlpkTree a)
+  -- ^ The search tree
   -> Ptr CInt
+  -- ^ The number of active nodes
   -> Ptr CInt
+  -- ^ The total number of active and inactive nodes
   -> Ptr CInt
+  -- ^ The total number of nodes that have been added to the tree
   -> IO ()
 
 foreign import ccall "glp_ios_curr_node" glp_ios_curr_node
   :: Ptr (GlpkTree a)
-  -> IO CInt
+  -- ^ The search tree
+  -> IO GlpkNodeIndex
+  -- ^ The current node in the search tree
 
 foreign import ccall "glp_ios_next_node" glp_ios_next_node
   :: Ptr (GlpkTree a)
-  -> CInt
-  -> IO CInt
+  -- ^ The search tree
+  -> GlpkNodeIndex
+  -- ^ The target node in the search tree
+  -> IO GlpkNodeIndex
+  -- ^ The next node in the search tree after the target node
 
 foreign import ccall "glp_ios_prev_node" glp_ios_prev_node
   :: Ptr (GlpkTree a)
-  -> CInt
-  -> IO CInt
+  -- ^ The search tree
+  -> GlpkNodeIndex
+  -- ^ The target node in the search tree
+  -> IO GlpkNodeIndex
+  -- ^ The parent node in the search tree after the target node
 
 foreign import ccall "glp_ios_up_node" glp_ios_up_node
   :: Ptr (GlpkTree a)
-  -> CInt
-  -> IO CInt
+  -- ^ The search tree
+  -> GlpkNodeIndex
+  -- ^ The target node in the search tree
+  -> IO GlpkNodeIndex
+  -- ^ The parent of the target node
 
 foreign import ccall "glp_ios_node_level" glp_ios_node_level
   :: Ptr (GlpkTree a)
-  -> CInt
+  -- ^ The search tree
+  -> GlpkNodeIndex
+  -- ^ The target node in the search tree
   -> IO CInt
+  -- ^ The level of the target in the search tree; the root problem
+  -- has level 0.
 
 foreign import ccall "glp_ios_node_bound" glp_ios_node_bound
   :: Ptr (GlpkTree a)
-  -> CInt
+  -- ^ The search tree
+  -> GlpkNodeIndex
+  -- ^ The target node in the search tree
   -> IO CDouble
+  -- ^ The objective bound on the target
 
 foreign import ccall "glp_ios_best_node" glp_ios_best_node
   :: Ptr (GlpkTree a)
-  -> IO CInt
+  -- ^ The search tree
+  -> IO GlpkNodeIndex
+  -- ^ The node in the search tree with the best objective bound
 
 foreign import ccall "glp_ios_mip_gap" glp_ios_mip_gap
   :: Ptr (GlpkTree a)
+  -- ^ The search tree
   -> IO CDouble
+  -- ^ The current MIP gap
 
 foreign import ccall "glp_ios_node_data" glp_ios_node_data
   :: Ptr (GlpkTree a)
+  -- ^ The search tree
+  -> GlpkNodeIndex
+  -- ^ The target node in the search tree
   -> IO (Ptr a)
+  -- ^ The data associated with the target
 
 foreign import ccall "glp_ios_row_attr" glp_ios_row_attr
   :: Ptr (GlpkTree a)
+  -- ^ The search tree
   -> CInt
+  -- ^ The index of the target cut
   -> Ptr GlpkCutAttribute
+  -- ^ The information about the target cut
   -> IO ()
 
 foreign import ccall "glp_ios_pool_size" glp_ios_pool_size
   :: Ptr (GlpkTree a)
+  -- ^ The search tree
   -> IO CInt
+  -- ^ The number of cutting planes added to the problem
 
 foreign import ccall "glp_ios_add_row" glp_ios_add_row
   :: Ptr (GlpkTree a)
+  -- ^ The search tree
   -> CString
+  -- ^ The name of the cutting plane to add
+  -> GlpkUserCutType
+  -- ^ The type of cut being added
+  -> Unused CInt
+  -- ^ Unused; must be zero
   -> CInt
-  -> CInt
-  -> CInt
-  -> CInt
-  -> Ptr CInt
-  -> Ptr CDouble
-  -> CInt
+  -- ^ The number of variable indices specified
+  -> GlpkArray CInt
+  -- ^ The variable indices
+  -> GlpkArray CDouble
+  -- ^ The variable coefficients
+  -> GlpkConstraintType
+  -- ^ The type of the constraint
   -> CDouble
+  -- ^ The right-hand side of the constraint
   -> IO ()
 
 foreign import ccall "glp_ios_del_row" glp_ios_del_row
   :: Ptr (GlpkTree a)
+  -- ^ The search tree
   -> CInt
+  -- ^ The index of the cut to delete
   -> IO ()
 
 foreign import ccall "glp_ios_clear_pool" glp_ios_clear_pool
   :: Ptr (GlpkTree a)
+  -- ^ The search tree
   -> IO ()
 
 foreign import ccall "glp_ios_can_branch" glp_ios_can_branch
   :: Ptr (GlpkTree a)
+  -- ^ The search tree
   -> VariableIndex
 
 foreign import ccall "glp_ios_branch_upon" glp_ios_branch_upon
   :: Ptr (GlpkTree a)
+  -- ^ The search tree
   -> VariableIndex
+  -- ^ The index of the variable to branch on
   -> GlpkBranchOption
+  -- ^ The branching decision
   -> IO ()
 
 foreign import ccall "glp_ios_select_node" glp_ios_select_node
   :: Ptr (GlpkTree a)
-  -> CInt
+  -- ^ The search tree
+  -> GlpkNodeIndex
+  -- ^ The subproblem to explore
   -> IO ()
 
 foreign import ccall "glp_ios_heur_sol" glp_ios_heur_sol
   :: Ptr (GlpkTree a)
-  -> Ptr CDouble
+  -- ^ The search tree
+  -> GlpkArray CDouble
+  -- ^ The variable values of an integer heuristic
   -> IO ()
 
 foreign import ccall "glp_ios_terminate" glp_ios_terminate
   :: Ptr (GlpkTree a)
+  -- ^ The search tree
   -> IO ()
 
 foreign import ccall "glp_set_col_kind" glp_set_col_kind
@@ -1159,6 +1218,30 @@ data AttrFooBar
 
 instance FixedLength AttrFooBar where
   fixedLength _ = 7
+
+newtype GlpkNodeIndex
+  = GlpkNodeIndex { fromGlpkNodeIndex :: CInt }
+  deriving
+    ( Enum
+    , Eq
+    , Ord
+    , Read
+    , Show
+    , Storable
+    )
+
+-- | A value between 101 and 200 used to distinguish between
+-- user-generated cut classes.
+newtype GlpkUserCutType
+  = GlpkUserCutType { fromGlpkUserCutType :: CInt }
+  deriving
+    ( Enum
+    , Eq
+    , Ord
+    , Read
+    , Show
+    , Storable
+    )
 
 -- A type used to represent an unused or undocumented struct member.
 newtype Unused a
