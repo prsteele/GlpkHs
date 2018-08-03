@@ -207,6 +207,25 @@ foreign import ccall "glp_sort_matrix" glp_sort_matrix
   :: Ptr Problem
   -- ^ The problem instance
   -> IO ()
+
+foreign import ccall "glp_del_rows" glp_del_rows
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CInt
+  -- ^ The number of constraints to delete
+  -> GlpkArray ConstraintIndex
+  -- ^ The indices of the constraints to delete
+  -> IO ()
+
+foreign import ccall "glp_del_cols" glp_del_cols
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CInt
+  -- ^ The number of variables to delete
+  -> GlpkArray VariableIndex
+  -- ^ The indices of the variables to delete
+  -> IO ()
+
 foreign import ccall "glp_simplex" glp_simplex
   :: Ptr Problem
   -> Ptr SimplexMethodControlParameters
