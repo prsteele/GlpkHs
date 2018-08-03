@@ -202,6 +202,11 @@ foreign import ccall "glp_check_dup" glp_check_dup
   -> GlpkArray CInt
   -- ^ The columns being checked
   -> CInt
+
+foreign import ccall "glp_sort_matrix" glp_sort_matrix
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO ()
 foreign import ccall "glp_simplex" glp_simplex
   :: Ptr Problem
   -> Ptr SimplexMethodControlParameters
