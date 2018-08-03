@@ -190,6 +190,18 @@ foreign import ccall "glp_load_matrix" glp_load_matrix
   -- ^ The coefficients
   -> IO ()
 
+foreign import ccall "glp_check_dup" glp_check_dup
+  :: CInt
+  -- ^ The number of rows in the matrix
+  -> CInt
+  -- ^ The number of columns in the matrix
+  -> CInt
+  -- ^ The number of nonzeros in the matrix
+  -> GlpkArray CInt
+  -- ^ The rows being checked
+  -> GlpkArray CInt
+  -- ^ The columns being checked
+  -> CInt
 foreign import ccall "glp_simplex" glp_simplex
   :: Ptr Problem
   -> Ptr SimplexMethodControlParameters
