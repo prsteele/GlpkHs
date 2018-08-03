@@ -72,18 +72,28 @@ foreign import ccall "glp_add_rows" glp_add_rows
 
 foreign import ccall "glp_set_row_bnds" glp_set_row_bnds
   :: Ptr Problem
+  -- ^ The problem instance
   -> ConstraintIndex
+  -- ^ The constraint being bounded
   -> GlpkConstraintType
+  -- ^ The type of constraint
   -> CDouble
+  -- ^ The lower bound
   -> CDouble
+  -- ^ The upper bound
   -> IO ()
 
 foreign import ccall "glp_set_col_bnds" glp_set_col_bnds
   :: Ptr Problem
+  -- ^ The problem instance
   -> VariableIndex
+  -- ^ The variable being bounded
   -> GlpkConstraintType
+  -- ^ The type of constraint
   -> CDouble
+  -- ^ The lower bound
   -> CDouble
+  -- ^ The upper bound
   -> IO ()
 
 foreign import ccall "glp_set_obj_coef" glp_set_obj_coef
