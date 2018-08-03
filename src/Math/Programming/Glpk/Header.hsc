@@ -108,12 +108,6 @@ foreign import ccall "glp_set_mat_col" glp_set_mat_col
   -> GlpkArray CDouble
   -> IO ()
 
-foreign import ccall "glp_write_lp" glp_write_lp
-  :: Ptr Problem
-  -> Ptr CInt
-  -> CString
-  -> IO ()
-
 foreign import ccall "glp_simplex" glp_simplex
   :: Ptr Problem
   -> Ptr SimplexMethodControlParameters
@@ -360,6 +354,29 @@ foreign import ccall "glp_write_mps" glp_write_mps
   -- ^ The MPS format to read
   -> Ptr MPSControlParameters
   -- ^ The MPS control parameters
+  -> CString
+  -- ^ The name of the file to write to
+  -> IO ()
+
+foreign import ccall "glp_init_cpxcp" glp_init_cpxcp
+  :: Ptr CplexLPFormatControlParameters
+  -- ^ The CPLEX LP control parameters to initialize
+  -> IO ()
+
+foreign import ccall "glp_read_lp" glp_read_lp
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> Ptr CplexLPFormatControlParameters
+  -- ^ The CPLEX LP control parameters
+  -> CString
+  -- ^ The name of the file to read
+  -> IO ()
+
+foreign import ccall "glp_write_lp" glp_write_lp
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> Ptr CplexLPFormatControlParameters
+  -- ^ The CPLEX LP control parameters
   -> CString
   -- ^ The name of the file to write to
   -> IO ()
@@ -1289,6 +1306,23 @@ data MpscpFooBar
 
 instance FixedLength MpscpFooBar where
   fixedLength _ = 17
+
+data CplexLPFormatControlParameters
+  = CplexLPFormatControlParameters
+    { cpxcpFooBar :: Unused (FixedLengthArray CpxcpFooBar CDouble)
+    }
+  deriving
+    ( Eq
+    , Generic
+    , Show
+    )
+
+instance GStorable CplexLPFormatControlParameters
+
+data CpxcpFooBar
+
+instance FixedLength CpxcpFooBar where
+  fixedLength _ = 20
 
 -- A type used to represent an unused or undocumented struct member.
 newtype Unused a
