@@ -381,6 +381,61 @@ foreign import ccall "glp_write_lp" glp_write_lp
   -- ^ The name of the file to write to
   -> IO ()
 
+foreign import ccall "glp_mpl_alloc_wksp" glp_mpl_alloc_wksp
+  :: IO (Ptr MathProgWorkspace)
+  -- ^ The allocated MathProg workspace
+
+foreign import ccall "glp_mpl_free_wksp" glp_mpl_free_wksp
+  :: Ptr MathProgWorkspace
+  -- ^ The MathProg workspace to deallocate
+  -> IO ()
+
+foreign import ccall "glp_mpl_init_rand" glp_mpl_init_rand
+  :: Ptr MathProgWorkspace
+  -- ^ The MathProg workspace
+  -> CInt
+  -- ^ The random number generator seed
+  -> IO MathProgResult
+
+foreign import ccall "glp_mpl_read_model" glp_mpl_read_model
+  :: Ptr MathProgWorkspace
+  -- ^ The MathProg workspace
+  -> CString
+  -- ^ The name of the file to read
+  -> CInt
+  -- ^ If nonzero, skip the data section
+  -> IO MathProgResult
+
+foreign import ccall "glp_mpl_read_data" glp_mpl_read_data
+  :: Ptr MathProgWorkspace
+  -- ^ The MathProg workspace
+  -> CString
+  -- ^ The name of the file to read
+  -> IO MathProgResult
+
+foreign import ccall "glp_mpl_generate" glp_mpl_generate
+  :: Ptr MathProgWorkspace
+  -- ^ The MathProg workspace
+  -> CString
+  -- ^ The output file. If NULL, output is written to standard output
+  -> IO MathProgResult
+
+foreign import ccall "glp_mpl_build_prob" glp_mpl_build_prob
+  :: Ptr MathProgWorkspace
+  -- ^ The MathProg workspace
+  -> Ptr Problem
+  -- ^ The problem instance to write to
+  -> IO MathProgResult
+
+foreign import ccall "glp_mpl_postsolve" glp_mpl_postsolve
+  :: Ptr MathProgWorkspace
+  -- ^ The MathProg workspace
+  -> Ptr Problem
+  -- ^ The solved problem instance
+  -> GlpkSolutionType
+  -- ^ The type of solution to be copied
+  -> IO MathProgResult
+
 newtype GlpkMajorVersion
   = GlpkMajorVersion { fromGlpkMajorVersion :: CInt }
   deriving
@@ -1323,6 +1378,23 @@ data CpxcpFooBar
 
 instance FixedLength CpxcpFooBar where
   fixedLength _ = 20
+
+data MathProgWorkspace
+
+-- Return codes from the MathProg translator.
+--
+-- Zero indicates success. Nonzero values indicate failure, and will
+-- be accompanied by a printed message.
+newtype MathProgResult
+  = MathProgResult { fromMathProgResult :: CInt }
+  deriving
+    ( Enum
+    , Eq
+    , Ord
+    , Read
+    , Show
+    , Storable
+    )
 
 -- A type used to represent an unused or undocumented struct member.
 newtype Unused a
