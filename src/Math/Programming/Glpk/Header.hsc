@@ -245,6 +245,18 @@ foreign import ccall "glp_erase_prob" glp_erase_prob
   -- ^ The problem instance
   -> IO ()
 
+foreign import ccall "glp_get_prob_name" glp_get_prob_name
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO CString
+  -- ^ The name of the problem
+
+foreign import ccall "glp_get_obj_name" glp_get_obj_name
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO CString
+  -- ^ The name of the objective
+
 foreign import ccall "glp_simplex" glp_simplex
   :: Ptr Problem
   -> Ptr SimplexMethodControlParameters
