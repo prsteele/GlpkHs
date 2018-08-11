@@ -370,7 +370,7 @@ foreign import ccall "glp_get_mat_col" glp_get_mat_col
   -- ^ The problem instance
   -> VariableIndex
   -- ^ The constraint to retrieve
-  -> GlpkArray ConstrainteIndex
+  -> GlpkArray ConstraintIndex
   -- ^ The constraint indices the variable is in
   -> GlpkArray CDouble
   -- ^ The constraint coefficients for the variable
@@ -412,7 +412,7 @@ foreign import ccall "glp_set_rii" glp_set_rii
   -- ^ The scaling factor
   -> IO ()
 
-foreign import ccall "glp_get_rii" glp_set_rii
+foreign import ccall "glp_get_rii" glp_get_rii
   :: Ptr Problem
   -- ^ The problem instance
   -> ConstraintIndex
@@ -422,13 +422,13 @@ foreign import ccall "glp_get_rii" glp_set_rii
 foreign import ccall "glp_set_sjj" glp_set_sjj
   :: Ptr Problem
   -- ^ The problem instance
-  -> Variable
+  -> VariableIndex
   -- ^ The variable to scale
   -> CDouble
   -- ^ The scaling factor
   -> IO ()
 
-foreign import ccall "glp_get_sjj" glp_set_sjj
+foreign import ccall "glp_get_sjj" glp_get_sjj
   :: Ptr Problem
   -- ^ The problem instance
   -> VariableIndex
@@ -442,23 +442,156 @@ foreign import ccall "glp_scale_prob" glp_scale_prob
   -- ^ The type of scaling to apply
   -> IO ()
 
+foreign import ccall "glp_unscale_prob" glp_unscale_prob
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO ()
+
+foreign import ccall "glp_set_row_stat" glp_set_row_stat
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> ConstraintIndex
+  -- ^ The constraint to modify
+  -> GlpkVariableStatus
+  -- ^ The status to apply
+  -> IO ()
+
+foreign import ccall "glp_set_col_stat" glp_set_col_stat
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> VariableIndex
+  -- ^ The variable to modify
+  -> GlpkVariableStatus
+  -- ^ The status to apply
+  -> IO ()
+
+foreign import ccall "glp_std_basis" glp_std_basis
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO ()
+
+foreign import ccall "glp_adv_basis" glp_adv_basis
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> Unused CInt
+  -- ^ Reserved for future use, must be zero
+  -> IO ()
+
+foreign import ccall "glp_cpx_basis" glp_cpx_basis
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO ()
+
 foreign import ccall "glp_simplex" glp_simplex
   :: Ptr Problem
+  -- ^ The problem instance
   -> Ptr SimplexMethodControlParameters
-  -> IO CInt
+  -- ^ Simplex control parameters
+  -> IO GlpkSimplexStatus
+  -- ^ The exit status
+
+foreign import ccall "glp_exact" glp_exact
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> Ptr SimplexMethodControlParameters
+  -- ^ Simplex control parameters
+  -> IO GlpkSimplexStatus
+  -- ^ The exit status
 
 foreign import ccall "glp_init_smcp" glp_init_smcp
   :: Ptr SimplexMethodControlParameters
+  -- ^ The Simplex control parameters to initialize
   -> IO ()
+
+foreign import ccall "glp_get_status" glp_get_status
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO GlpkSolutionStatus
+
+foreign import ccall "glp_get_prim_stat" glp_get_prim_stat
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO GlpkSolutionStatus
+
+foreign import ccall "glp_get_dual_stat" glp_get_dual_stat
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO GlpkSolutionStatus
+
+foreign import ccall "glp_get_obj_val" glp_get_obj_val
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO CDouble
+
+foreign import ccall "glp_get_row_stat" glp_get_row_stat
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> ConstraintIndex
+  -- ^ The constraint to query
+  -> IO GlpkVariableStatus
+  -- ^ The status of the associated with the auxiliary variable
+
+foreign import ccall "glp_get_col_stat" glp_get_col_stat
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> VariableIndex
+  -- ^ The variable to query
+  -> IO GlpkVariableStatus
+  -- ^ The status of the variable
+
+foreign import ccall "glp_get_row_prim" glp_get_row_prim
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> ConstraintIndex
+  -- ^ The constraint to query
+  -> IO CDouble
+  -- ^ The primal auxiliary variable value
+
+foreign import ccall "glp_get_row_dual" glp_get_row_dual
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> ConstraintIndex
+  -- ^ The constraint to query
+  -> IO CDouble
+  -- ^ The dual auxiliary variable value
+
+foreign import ccall "glp_get_col_prim" glp_get_col_prim
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> VariableIndex
+  -- ^ The variable to query
+  -> IO CDouble
+  -- ^ The primal variable value
+
+foreign import ccall "glp_get_col_dual" glp_get_col_dual
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> VariableIndex
+  -- ^ The variable to query
+  -> IO CDouble
+  -- ^ The dual variable value
+
+foreign import ccall "glp_get_unbnd_ray" glp_get_unbnd_ray
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO CInt
+  -- ^ The index, k, of the variable producing unboundedness. If 1 <=
+  -- k <= m, then k is the kth auxiliary variable. If m + 1 <= k <= m
+  -- + n, it is the (k - m)th structural variable.
 
 foreign import ccall "glp_get_bfcp" glp_get_bfcp
   :: Ptr Problem
+  -- ^ The problem instance
   -> Ptr BasisFactorizationControlParameters
+  -- ^ A pointer that will hold the basis factorization control
+  -- parameters
   -> IO ()
 
 foreign import ccall "glp_set_bfcp" glp_set_bfcp
   :: Ptr Problem
+  -- ^ The problem instance
   -> Ptr BasisFactorizationControlParameters
+  -- ^ The basis factorization control parameters
   -> IO ()
 
 foreign import ccall "glp_interior" glp_interior
