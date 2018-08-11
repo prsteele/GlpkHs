@@ -15,6 +15,7 @@ import Foreign.Storable.Generic
 
 #include <glpk.h>
 
+-- A phantom type representing a problem in GLPK
 data Problem
 
 -- | An array whose data begins at index 1
@@ -35,8 +36,8 @@ mkGlpkArray xs = do
   pokeArray (plusPtr array aSize) xs
   return $ GlpkArray array
 
-newtype VariableIndex
-  = VariableIndex { fromVariableIndex :: CInt}
+newtype Column
+  = Column { fromColumn :: CInt}
   deriving
     ( Enum
     , Eq
@@ -46,8 +47,8 @@ newtype VariableIndex
     , Storable
     )
 
-newtype ConstraintIndex
-  = ConstraintIndex { fromConstraintIndex :: CInt}
+newtype Row
+  = Row { fromRow :: CInt}
   deriving
     ( Enum
     , Eq
@@ -92,7 +93,7 @@ foreign import ccall "glp_add_rows" glp_add_rows
   -- ^ The problem instance
   -> CInt
   -- ^ The number of constraints to add
-  -> IO ConstraintIndex
+  -> IO Row
   -- ^ The index of the first new constraint added
 
 foreign import ccall "glp_add_cols" glp_add_cols
@@ -100,13 +101,13 @@ foreign import ccall "glp_add_cols" glp_add_cols
   -- ^ The problem instance
   -> CInt
   -- ^ The number of variables to add
-  -> IO VariableIndex
+  -> IO Column
   -- ^ The index of the first new variable added
 
 foreign import ccall "glp_set_row_name" glp_set_row_name
   :: Ptr Problem
   -- ^ The problem instance
-  -> ConstraintIndex
+  -> Row
   -- ^ The constraint being named
   -> CString
   -- ^ The name of the constraint
@@ -115,7 +116,7 @@ foreign import ccall "glp_set_row_name" glp_set_row_name
 foreign import ccall "glp_set_col_name" glp_set_col_name
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The variable being named
   -> CString
   -- ^ The name of the variable
@@ -124,7 +125,7 @@ foreign import ccall "glp_set_col_name" glp_set_col_name
 foreign import ccall "glp_set_row_bnds" glp_set_row_bnds
   :: Ptr Problem
   -- ^ The problem instance
-  -> ConstraintIndex
+  -> Row
   -- ^ The constraint being bounded
   -> GlpkConstraintType
   -- ^ The type of constraint
@@ -137,7 +138,7 @@ foreign import ccall "glp_set_row_bnds" glp_set_row_bnds
 foreign import ccall "glp_set_col_bnds" glp_set_col_bnds
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The variable being bounded
   -> GlpkConstraintType
   -- ^ The type of constraint
@@ -150,7 +151,7 @@ foreign import ccall "glp_set_col_bnds" glp_set_col_bnds
 foreign import ccall "glp_set_obj_coef" glp_set_obj_coef
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The variable
   -> CDouble
   -- ^ The objective coefficient
@@ -159,11 +160,11 @@ foreign import ccall "glp_set_obj_coef" glp_set_obj_coef
 foreign import ccall "glp_set_mat_row" glp_set_mat_row
   :: Ptr Problem
   -- ^ The problem instance
-  -> ConstraintIndex
+  -> Row
   -- ^ The constraint being modified
   -> CInt
   -- ^ The number of variables being set
-  -> GlpkArray VariableIndex
+  -> GlpkArray Column
   -- ^ The variables being set
   -> GlpkArray CDouble
   -- ^ The variable coefficients
@@ -172,11 +173,11 @@ foreign import ccall "glp_set_mat_row" glp_set_mat_row
 foreign import ccall "glp_set_mat_col" glp_set_mat_col
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The variable being modified
   -> CInt
   -- ^ The number of coefficients being set
-  -> Ptr ConstraintIndex
+  -> Ptr Row
   -- ^ The constraints being modified
   -> GlpkArray CDouble
   -- ^ The variable coefficients
@@ -187,9 +188,9 @@ foreign import ccall "glp_load_matrix" glp_load_matrix
   -- ^ The problem instance
   -> CInt
   -- ^ The number of nonzero elements to be loaded
-  -> GlpkArray ConstraintIndex
+  -> GlpkArray Row
   -- ^ The constraint indices
-  -> GlpkArray VariableIndex
+  -> GlpkArray Column
   -- ^ The variable indices
   -> GlpkArray CDouble
   -- ^ The coefficients
@@ -218,7 +219,7 @@ foreign import ccall "glp_del_rows" glp_del_rows
   -- ^ The problem instance
   -> CInt
   -- ^ The number of constraints to delete
-  -> GlpkArray ConstraintIndex
+  -> GlpkArray Row
   -- ^ The indices of the constraints to delete
   -> IO ()
 
@@ -227,7 +228,7 @@ foreign import ccall "glp_del_cols" glp_del_cols
   -- ^ The problem instance
   -> CInt
   -- ^ The number of variables to delete
-  -> GlpkArray VariableIndex
+  -> GlpkArray Column
   -- ^ The indices of the variables to delete
   -> IO ()
 
@@ -278,7 +279,7 @@ foreign import ccall "glp_get_num_cols" glp_get_num_cols
 foreign import ccall "glp_get_row_name" glp_get_row_name
   :: Ptr Problem
   -- ^ The problem instance
-  -> ConstraintIndex
+  -> Row
   -- ^ The index of the constraint
   -> IO CString
   -- ^ The constraint name
@@ -286,7 +287,7 @@ foreign import ccall "glp_get_row_name" glp_get_row_name
 foreign import ccall "glp_get_col_name" glp_get_col_name
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The index of the variable
   -> IO CString
   -- ^ The variable name
@@ -294,7 +295,7 @@ foreign import ccall "glp_get_col_name" glp_get_col_name
 foreign import ccall "glp_get_row_type" glp_get_row_type
   :: Ptr Problem
   -- ^ The problem instance
-  -> ConstraintIndex
+  -> Row
   -- ^ The index of the constraint
   -> IO GlpkConstraintType
   -- ^ The constraint type
@@ -302,7 +303,7 @@ foreign import ccall "glp_get_row_type" glp_get_row_type
 foreign import ccall "glp_get_row_lb" glp_get_row_lb
   :: Ptr Problem
   -- ^ The problem instance
-  -> ConstraintIndex
+  -> Row
   -- ^ The index of the constraint
   -> IO CDouble
   -- ^ The constraint lower bound
@@ -310,7 +311,7 @@ foreign import ccall "glp_get_row_lb" glp_get_row_lb
 foreign import ccall "glp_get_row_ub" glp_get_row_ub
   :: Ptr Problem
   -- ^ The problem instance
-  -> ConstraintIndex
+  -> Row
   -- ^ The index of the constraint
   -> IO CDouble
   -- ^ The constraint upper bound
@@ -318,7 +319,7 @@ foreign import ccall "glp_get_row_ub" glp_get_row_ub
 foreign import ccall "glp_get_col_type" glp_get_col_type
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The index of the variable
   -> IO GlpkVariableType
   -- ^ The constraint type
@@ -326,7 +327,7 @@ foreign import ccall "glp_get_col_type" glp_get_col_type
 foreign import ccall "glp_get_col_lb" glp_get_col_lb
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The index of the variable
   -> IO CDouble
   -- ^ The variable lower bound
@@ -334,7 +335,7 @@ foreign import ccall "glp_get_col_lb" glp_get_col_lb
 foreign import ccall "glp_get_col_ub" glp_get_col_ub
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The index of the variable
   -> IO CDouble
   -- ^ The variable upper bound
@@ -342,7 +343,7 @@ foreign import ccall "glp_get_col_ub" glp_get_col_ub
 foreign import ccall "glp_get_obj_coef" glp_get_obj_coef
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The index of the variable
   -> IO CDouble
   -- ^ The objective coefficient
@@ -356,9 +357,9 @@ foreign import ccall "glp_get_num_nz" glp_get_num_nz
 foreign import ccall "glp_get_mat_row" glp_get_mat_row
   :: Ptr Problem
   -- ^ The problem instance
-  -> ConstraintIndex
+  -> Row
   -- ^ The constraint to retrieve
-  -> GlpkArray VariableIndex
+  -> GlpkArray Column
   -- ^ The variable indices in the constraint
   -> GlpkArray CDouble
   -- ^ The variable coefficients in the constraint
@@ -368,9 +369,9 @@ foreign import ccall "glp_get_mat_row" glp_get_mat_row
 foreign import ccall "glp_get_mat_col" glp_get_mat_col
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The constraint to retrieve
-  -> GlpkArray ConstraintIndex
+  -> GlpkArray Row
   -- ^ The constraint indices the variable is in
   -> GlpkArray CDouble
   -- ^ The constraint coefficients for the variable
@@ -392,7 +393,7 @@ foreign import ccall "glp_find_row" glp_find_row
   -- ^ The problem instance
   -> CString
   -- ^ The name of the constraint
-  -> IO ConstraintIndex
+  -> IO Row
   -- ^ The index of the constraint
 
 foreign import ccall "glp_find_col" glp_find_col
@@ -400,13 +401,13 @@ foreign import ccall "glp_find_col" glp_find_col
   -- ^ The problem instance
   -> CString
   -- ^ The name of the variable
-  -> IO VariableIndex
+  -> IO Column
   -- ^ The index of the variable
 
 foreign import ccall "glp_set_rii" glp_set_rii
   :: Ptr Problem
   -- ^ The problem instance
-  -> ConstraintIndex
+  -> Row
   -- ^ The constraint to scale
   -> CDouble
   -- ^ The scaling factor
@@ -415,14 +416,14 @@ foreign import ccall "glp_set_rii" glp_set_rii
 foreign import ccall "glp_get_rii" glp_get_rii
   :: Ptr Problem
   -- ^ The problem instance
-  -> ConstraintIndex
+  -> Row
   -- ^ The constraint index
   -> IO CDouble
 
 foreign import ccall "glp_set_sjj" glp_set_sjj
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The variable to scale
   -> CDouble
   -- ^ The scaling factor
@@ -431,7 +432,7 @@ foreign import ccall "glp_set_sjj" glp_set_sjj
 foreign import ccall "glp_get_sjj" glp_get_sjj
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The variable index
   -> IO CDouble
 
@@ -450,7 +451,7 @@ foreign import ccall "glp_unscale_prob" glp_unscale_prob
 foreign import ccall "glp_set_row_stat" glp_set_row_stat
   :: Ptr Problem
   -- ^ The problem instance
-  -> ConstraintIndex
+  -> Row
   -- ^ The constraint to modify
   -> GlpkVariableStatus
   -- ^ The status to apply
@@ -459,7 +460,7 @@ foreign import ccall "glp_set_row_stat" glp_set_row_stat
 foreign import ccall "glp_set_col_stat" glp_set_col_stat
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The variable to modify
   -> GlpkVariableStatus
   -- ^ The status to apply
@@ -526,7 +527,7 @@ foreign import ccall "glp_get_obj_val" glp_get_obj_val
 foreign import ccall "glp_get_row_stat" glp_get_row_stat
   :: Ptr Problem
   -- ^ The problem instance
-  -> ConstraintIndex
+  -> Row
   -- ^ The constraint to query
   -> IO GlpkVariableStatus
   -- ^ The status of the associated with the auxiliary variable
@@ -534,7 +535,7 @@ foreign import ccall "glp_get_row_stat" glp_get_row_stat
 foreign import ccall "glp_get_col_stat" glp_get_col_stat
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The variable to query
   -> IO GlpkVariableStatus
   -- ^ The status of the variable
@@ -542,7 +543,7 @@ foreign import ccall "glp_get_col_stat" glp_get_col_stat
 foreign import ccall "glp_get_row_prim" glp_get_row_prim
   :: Ptr Problem
   -- ^ The problem instance
-  -> ConstraintIndex
+  -> Row
   -- ^ The constraint to query
   -> IO CDouble
   -- ^ The primal auxiliary variable value
@@ -550,7 +551,7 @@ foreign import ccall "glp_get_row_prim" glp_get_row_prim
 foreign import ccall "glp_get_row_dual" glp_get_row_dual
   :: Ptr Problem
   -- ^ The problem instance
-  -> ConstraintIndex
+  -> Row
   -- ^ The constraint to query
   -> IO CDouble
   -- ^ The dual auxiliary variable value
@@ -558,7 +559,7 @@ foreign import ccall "glp_get_row_dual" glp_get_row_dual
 foreign import ccall "glp_get_col_prim" glp_get_col_prim
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The variable to query
   -> IO CDouble
   -- ^ The primal variable value
@@ -566,7 +567,7 @@ foreign import ccall "glp_get_col_prim" glp_get_col_prim
 foreign import ccall "glp_get_col_dual" glp_get_col_dual
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The variable to query
   -> IO CDouble
   -- ^ The dual variable value
@@ -636,7 +637,7 @@ foreign import ccall "glp_mip_obj_val" glp_mip_obj_val
 foreign import ccall "glp_mip_row_val" glp_mip_row_val
   :: Ptr Problem
   -- ^ The problem instance
-  -> ConstraintIndex
+  -> Row
   -- ^ The constraint to query
   -> IO CDouble
   -- ^ The value of the auxiliary variable
@@ -644,7 +645,7 @@ foreign import ccall "glp_mip_row_val" glp_mip_row_val
 foreign import ccall "glp_mip_col_val" glp_mip_col_val
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The variable to query
   -> IO CDouble
   -- ^ The value of the variable
@@ -861,9 +862,9 @@ foreign import ccall "glp_analyze_bound" glp_analyze_bound
   -- ^ The problem instance
   -> CInt
   -> Ptr CDouble
-  -> Ptr VariableIndex
+  -> Ptr Column
   -> Ptr CDouble
-  -> Ptr VariableIndex
+  -> Ptr Column
   -> IO ()
 
 foreign import ccall "glp_analyze_coef" glp_analyze_coef
@@ -871,10 +872,10 @@ foreign import ccall "glp_analyze_coef" glp_analyze_coef
   -- ^ The problem instance
   -> CInt
   -> Ptr CDouble
-  -> Ptr VariableIndex
+  -> Ptr Column
   -> Ptr CDouble
   -> Ptr CDouble
-  -> Ptr VariableIndex
+  -> Ptr Column
   -> Ptr CDouble
   -> IO ()
 
@@ -892,7 +893,7 @@ foreign import ccall "glp_ipt_obj_val" glp_ipt_obj_val
 foreign import ccall "glp_ipt_row_prim" glp_ipt_row_prim
   :: Ptr Problem
   -- ^ The problem instance
-  -> ConstraintIndex
+  -> Row
   -- ^ The constraint to query
   -> IO Double
   -- ^ The primal auxiliary variable value
@@ -900,7 +901,7 @@ foreign import ccall "glp_ipt_row_prim" glp_ipt_row_prim
 foreign import ccall "glp_ipt_row_dual" glp_ipt_row_dual
   :: Ptr Problem
   -- ^ The problem instance
-  -> ConstraintIndex
+  -> Row
   -- ^ The constraint to query
   -> IO Double
   -- ^ The dual auxiliary variable value
@@ -908,7 +909,7 @@ foreign import ccall "glp_ipt_row_dual" glp_ipt_row_dual
 foreign import ccall "glp_ipt_col_prim" glp_ipt_col_prim
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The variable to query
   -> IO Double
   -- ^ The primal variable value
@@ -916,7 +917,7 @@ foreign import ccall "glp_ipt_col_prim" glp_ipt_col_prim
 foreign import ccall "glp_ipt_col_dual" glp_ipt_col_dual
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The variable to query
   -> IO Double
   -- ^ The dual variable value
@@ -1062,12 +1063,12 @@ foreign import ccall "glp_ios_clear_pool" glp_ios_clear_pool
 foreign import ccall "glp_ios_can_branch" glp_ios_can_branch
   :: Ptr (GlpkTree a)
   -- ^ The search tree
-  -> VariableIndex
+  -> Column
 
 foreign import ccall "glp_ios_branch_upon" glp_ios_branch_upon
   :: Ptr (GlpkTree a)
   -- ^ The search tree
-  -> VariableIndex
+  -> Column
   -- ^ The index of the variable to branch on
   -> GlpkBranchOption
   -- ^ The branching decision
@@ -1095,7 +1096,7 @@ foreign import ccall "glp_ios_terminate" glp_ios_terminate
 foreign import ccall "glp_set_col_kind" glp_set_col_kind
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The variable index
   -> GlpkVariableType
   -- ^ The type of the variable
@@ -1104,7 +1105,7 @@ foreign import ccall "glp_set_col_kind" glp_set_col_kind
 foreign import ccall "glp_get_col_kind" glp_get_col_kind
   :: Ptr Problem
   -- ^ The problem instance
-  -> VariableIndex
+  -> Column
   -- ^ The variable index
   -> IO GlpkVariableType
   -- ^ The type of the variable
