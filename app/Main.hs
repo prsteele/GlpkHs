@@ -6,9 +6,9 @@ import Foreign.C.String
 import Foreign.Ptr
 import Foreign.Marshal.Alloc
 import Foreign.Marshal.Array
+import Foreign.Storable
 import Text.Printf
 
-import Math.Programming.Glpk
 import Math.Programming.Glpk.Header
 
 main :: IO ()
@@ -22,8 +22,12 @@ main = do
   x_index <- glp_add_cols problem 2
   let y_index = succ x_index
 
-  -- Set the constraint  
-  glp_set_row_bnds problem row glpkLT 0 4
+  -- Make the variables integer
+  glp_set_col_kind problem x_index glpkInteger
+  glp_set_col_kind problem y_index glpkInteger
+
+  -- Set the constraint
+  glp_set_row_bnds problem row glpkLT 0.1 4
 
   indices <- mkGlpkArray [x_index, y_index]
 
@@ -40,8 +44,24 @@ main = do
 
   withCString "example.lp" (glp_write_lp problem nullPtr)
 
-  status <- glp_simplex problem nullPtr
+  bfcp <- alloca $ \ptr -> do
+    glp_get_bfcp problem ptr
+    peek ptr
 
-  putStrLn $ printf "Finished with status %i" (fromIntegral status :: Int)
-  
+  print bfcp
+
+  alloca $ \simplexControl -> do
+    glp_init_smcp simplexControl
+    glp_simplex problem simplexControl >>= print
+
+  GlpkMIPStatus mipStatus <- alloca $ \mipControlPtr -> do
+    glp_init_iocp mipControlPtr
+
+    mipControl <- peek mipControlPtr
+    poke mipControlPtr $ mipControl { iocpPresolve = glpkPresolveOn }
+
+    glp_intopt problem mipControlPtr
+
+  putStrLn $ printf "Finished with status %i" (fromIntegral mipStatus :: Int)
+
   return ()
