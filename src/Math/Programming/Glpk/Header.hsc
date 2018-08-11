@@ -752,6 +752,132 @@ foreign import ccall "glp_write_mip" glp_write_mip
   -> IO CInt
   -- Zero on success
 
+foreign import ccall "glp_bf_exists" glp_bf_exists
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO CInt
+  -- ^ Whether an LP basis factorization exists
+
+foreign import ccall "glp_factorize" glp_factorize
+  :: Ptr Problem
+  -- ^ Compute an LP basis factorization
+  -> IO ()
+
+foreign import ccall "glp_bf_updated" glp_bf_updated
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO CInt
+  -- ^ Whether the LP basis factorization is updated
+
+foreign import ccall "glp_get_bhead" glp_get_bhead
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CInt
+  -> IO CInt
+
+foreign import ccall "glp_get_row_bind" glp_get_row_bind
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CInt
+  -> IO CInt
+
+foreign import ccall "glp_get_col_bind" glp_get_col_bind
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CInt
+  -> IO CInt
+
+foreign import ccall "glp_ftran" glp_ftran
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> Ptr CDouble
+  -> IO ()
+
+foreign import ccall "glp_btran" glp_btran
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> Ptr CDouble
+  -> IO ()
+
+foreign import ccall "glp_warm_up" glp_warm_up
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO GlpkFactorizationResult
+
+foreign import ccall "glp_eval_tab_row" glp_eval_tab_row
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CInt
+  -> Ptr CInt
+  -> Ptr CDouble
+  -> IO CInt
+
+foreign import ccall "glp_eval_tab_col" glp_eval_tab_col
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CInt
+  -> Ptr CInt
+  -> Ptr CDouble
+  -> IO CInt
+
+foreign import ccall "glp_transform_row" glp_transform_row
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CInt
+  -> Ptr CInt
+  -> Ptr CDouble
+  -> IO CInt
+
+foreign import ccall "glp_transform_col" glp_transform_col
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CInt
+  -> Ptr CInt
+  -> Ptr CDouble
+  -> IO CInt
+
+foreign import ccall "glp_prim_rtest" glp_prim_rtest
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CInt
+  -> Ptr CInt
+  -> Ptr CDouble
+  -> CInt
+  -> CDouble
+  -> IO CInt
+
+foreign import ccall "glp_dual_rtest" glp_dual_rtest
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CInt
+  -> Ptr CInt
+  -> Ptr CDouble
+  -> CInt
+  -> CDouble
+  -> IO CInt
+
+foreign import ccall "glp_analyze_bound" glp_analyze_bound
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CInt
+  -> Ptr CDouble
+  -> Ptr VariableIndex
+  -> Ptr CDouble
+  -> Ptr VariableIndex
+  -> IO ()
+
+foreign import ccall "glp_analyze_coef" glp_analyze_coef
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CInt
+  -> Ptr CDouble
+  -> Ptr VariableIndex
+  -> Ptr CDouble
+  -> Ptr CDouble
+  -> Ptr VariableIndex
+  -> Ptr CDouble
+  -> IO ()
+
 foreign import ccall "glp_init_iocp" glp_init_iocp
   :: Ptr (MIPControlParameters a)
   -- ^ The MIP control parameters to initialize
@@ -1034,7 +1160,8 @@ foreign import ccall "glp_read_lp" glp_read_lp
   -- ^ The CPLEX LP control parameters
   -> CString
   -- ^ The name of the file to read
-  -> IO ()
+  -> IO CInt
+  -- ^ Zero on success
 
 foreign import ccall "glp_write_lp" glp_write_lp
   :: Ptr Problem
@@ -1043,7 +1170,28 @@ foreign import ccall "glp_write_lp" glp_write_lp
   -- ^ The CPLEX LP control parameters
   -> CString
   -- ^ The name of the file to write to
-  -> IO ()
+  -> IO CInt
+  -- ^ Zero on success
+
+foreign import ccall "glp_read_prob" glp_read_prob
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> Unused CInt
+  -- ^ Reserved for future use, must be zero
+  -> CString
+  -- ^ The file to read from
+  -> IO CInt
+  -- ^ Zero on success
+
+foreign import ccall "glp_write_prob" glp_write_prob
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> Unused CInt
+  -- ^ Reserved for future use, must be zero
+  -> CString
+  -- ^ The file to write to
+  -> IO CInt
+  -- ^ Zero on success
 
 foreign import ccall "glp_mpl_alloc_wksp" glp_mpl_alloc_wksp
   :: IO (Ptr MathProgWorkspace)
@@ -1099,6 +1247,56 @@ foreign import ccall "glp_mpl_postsolve" glp_mpl_postsolve
   -> GlpkSolutionType
   -- ^ The type of solution to be copied
   -> IO MathProgResult
+
+foreign import ccall "glp_read_cnfsat" glp_read_cnfstat
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CString
+  -- ^ The file to read from
+  -> CInt
+  -- ^ Zero on success
+
+foreign import ccall "glp_write_cnfsat" glp_write_cnfstat
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CString
+  -- ^ The file to write to
+  -> CInt
+  -- ^ Zero on success
+
+foreign import ccall "glp_minisat1" glp_minisat1
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO CInt
+
+foreign import ccall "glp_intfeas1" glp_intfeas1
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CInt
+  -> CInt
+  -> IO CInt
+
+foreign import ccall "glp_init_env" glp_init_env
+  :: IO CInt
+
+foreign import ccall "glp_free_env" glp_free_env
+  :: IO CInt
+
+foreign import ccall "glp_version" glp_version
+  :: IO CString
+
+foreign import ccall "glp_config" glp_config
+  :: CString
+  -> IO CString
+
+foreign import ccall "glp_term_out" glp_term_out
+  :: GlpkControl
+  -> IO GlpkControl
+
+foreign import ccall "glp_term_hook" glp_term_hook
+  :: FunPtr (Ptr a -> CString -> IO CInt)
+  -> Ptr a
+  -> IO ()
 
 newtype GlpkMajorVersion
   = GlpkMajorVersion { fromGlpkMajorVersion :: CInt }
