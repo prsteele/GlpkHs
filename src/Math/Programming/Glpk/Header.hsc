@@ -596,25 +596,204 @@ foreign import ccall "glp_set_bfcp" glp_set_bfcp
 
 foreign import ccall "glp_interior" glp_interior
   :: Ptr Problem
+  -- ^ The problem instance
   -> Ptr InteriorPointControlParameters
+  -- ^ The interior point control parameters
   -> IO GlpkInteriorPointStatus
+  -- ^ The status of the solve
 
 foreign import ccall "glp_init_iptcp" glp_init_iptcp
   :: Ptr InteriorPointControlParameters
+  -- ^ The control parameters to initialize
   -> IO ()
 
 foreign import ccall "glp_ipt_status" glp_ipt_status
-  :: Ptr InteriorPointControlParameters
+  :: Ptr Problem
+  -- ^ The problem instance
   -> IO GlpkSolutionStatus
+  -- ^ The status of the interior point solve
 
 foreign import ccall "glp_intopt" glp_intopt
   :: Ptr Problem
+  -- ^ The problem instance
   -> Ptr (MIPControlParameters a)
+  -- ^ The MIP control parameters
   -> IO GlpkMIPStatus
+  -- ^ The status of the solve
+
+foreign import ccall "glp_mip_status" glp_mip_status
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO GlpkSolutionStatus
+  -- The status of the solution
+
+foreign import ccall "glp_mip_obj_val" glp_mip_obj_val
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO CDouble
+  -- ^ The MIP object
+
+foreign import ccall "glp_mip_row_val" glp_mip_row_val
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> ConstraintIndex
+  -- ^ The constraint to query
+  -> IO CDouble
+  -- ^ The value of the auxiliary variable
+
+foreign import ccall "glp_mip_col_val" glp_mip_col_val
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> VariableIndex
+  -- ^ The variable to query
+  -> IO CDouble
+  -- ^ The value of the variable
+
+foreign import ccall "glp_check_kkt" glp_check_kkt
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> GlpkSolutionType
+  -- ^ The solution type to check
+  -> GlpkKKTCheck
+  -- ^ The condition to be checked
+  -> Ptr CDouble
+  -- ^ The largest absolute error
+  -> Ptr CInt
+  -- ^ The row, column, or variable with the largest absolute error
+  -> Ptr CDouble
+  -- ^ The largest relative error
+  -> Ptr CInt
+  -- ^ The row, column, or variable with the largest relative error
+  -> IO ()
+
+foreign import ccall "glp_print_sol" glp_print_sol
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CString
+  -- ^ The file name to write to
+  -> IO CInt
+  -- ^ Zero on success
+
+foreign import ccall "glp_read_sol" glp_read_sol
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CString
+  -- ^ The file name to read from
+  -> IO CInt
+  -- ^ Zero on success
+
+foreign import ccall "glp_write_sol" glp_write_sol
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CString
+  -- ^ The file name to write to
+  -> IO CInt
+  -- ^ Zero on success
+
+foreign import ccall "glp_print_ranges" glp_print_ranges
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CInt
+  -- ^ The number of rows and columns
+  -> Ptr CInt
+  -- ^ The rows and clumns to analyze
+  -> Unused CInt
+  -- ^ Reserved for future use, must be zero
+  -> CString
+  -- ^ The file name to write to
+  -> IO CInt
+  -- ^ Zero on success
+
+foreign import ccall "glp_print_ipt" glp_print_ipt
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CString
+  -- ^ The file to write to
+  -> IO CInt
+  -- Zero on success
+
+foreign import ccall "glp_read_ipt" glp_read_ipt
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CString
+  -- ^ The file to read from
+  -> IO CInt
+  -- Zero on success
+
+foreign import ccall "glp_write_ipt" glp_write_ipt
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CString
+  -- ^ The file to write to
+  -> IO CInt
+  -- Zero on success
+
+foreign import ccall "glp_print_mip" glp_print_mip
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CString
+  -- ^ The file to write to
+  -> IO CInt
+  -- Zero on success
+
+foreign import ccall "glp_read_mip" glp_read_mip
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CString
+  -- ^ The file to read from
+  -> IO CInt
+  -- Zero on success
+
+foreign import ccall "glp_write_mip" glp_write_mip
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> CString
+  -- ^ The file to write to
+  -> IO CInt
+  -- Zero on success
 
 foreign import ccall "glp_init_iocp" glp_init_iocp
   :: Ptr (MIPControlParameters a)
+  -- ^ The MIP control parameters to initialize
   -> IO ()
+
+foreign import ccall "glp_ipt_obj_val" glp_ipt_obj_val
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO CDouble
+  -- ^ The objective value
+
+foreign import ccall "glp_ipt_row_prim" glp_ipt_row_prim
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> ConstraintIndex
+  -- ^ The constraint to query
+  -> IO Double
+  -- ^ The primal auxiliary variable value
+
+foreign import ccall "glp_ipt_row_dual" glp_ipt_row_dual
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> ConstraintIndex
+  -- ^ The constraint to query
+  -> IO Double
+  -- ^ The dual auxiliary variable value
+
+foreign import ccall "glp_ipt_col_prim" glp_ipt_col_prim
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> VariableIndex
+  -- ^ The variable to query
+  -> IO Double
+  -- ^ The primal variable value
+
+foreign import ccall "glp_ipt_col_dual" glp_ipt_col_dual
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> VariableIndex
+  -- ^ The variable to query
+  -> IO Double
+  -- ^ The dual variable value
 
 foreign import ccall "glp_ios_reason" glp_ios_reason
   :: Ptr (GlpkTree a)
@@ -789,14 +968,32 @@ foreign import ccall "glp_ios_terminate" glp_ios_terminate
 
 foreign import ccall "glp_set_col_kind" glp_set_col_kind
   :: Ptr Problem
+  -- ^ The problem instance
   -> VariableIndex
+  -- ^ The variable index
   -> GlpkVariableType
+  -- ^ The type of the variable
   -> IO ()
 
-foreign import ccall "glp_get_col_kind" glp_vet_col_kind
+foreign import ccall "glp_get_col_kind" glp_get_col_kind
   :: Ptr Problem
+  -- ^ The problem instance
   -> VariableIndex
+  -- ^ The variable index
   -> IO GlpkVariableType
+  -- ^ The type of the variable
+
+foreign import ccall "glp_get_num_int" glp_get_num_int
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO CInt
+  -- ^ The number of integer variables
+
+foreign import ccall "glp_get_num_bin" glp_get_num_bin
+  :: Ptr Problem
+  -- ^ The problem instance
+  -> IO CInt
+  -- ^ The number of binary variables
 
 foreign import ccall "glp_init_mpscp" glp_init_mpscp
   :: Ptr MPSControlParameters
