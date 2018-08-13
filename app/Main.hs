@@ -36,8 +36,8 @@ main = do
   free (fromGplkArray indices)
   free (fromGplkArray coefs)
 
-  glp_set_col_bnds problem x_index glpkEQ 1 8
-  glp_set_col_bnds problem y_index glpkEQ 0 10
+  glp_set_col_bnds problem x_index glpkBounded 1 8
+  glp_set_col_bnds problem y_index glpkBounded 0 10
 
   glp_set_obj_coef problem x_index 2.0
   glp_set_obj_coef problem y_index 0.5

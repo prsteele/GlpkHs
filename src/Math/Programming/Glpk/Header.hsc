@@ -1383,7 +1383,7 @@ newtype GlpkConstraintType
  , glpkFree = GLP_FR
  , glpkGT = GLP_LO
  , glpkLT = GLP_UP
- , glpkEQ = GLP_DB
+ , glpkBounded = GLP_DB
  , glpkFixed = GLP_FX
  }
 
