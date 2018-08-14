@@ -33,8 +33,8 @@ main = do
 
   coefs <- mkGlpkArray [1.0, 1.0]
   glp_set_mat_row problem row 2 indices coefs
-  free (fromGplkArray indices)
-  free (fromGplkArray coefs)
+  free (fromGlpkArray indices)
+  free (fromGlpkArray coefs)
 
   glp_set_col_bnds problem x_index glpkBounded 1 8
   glp_set_col_bnds problem y_index glpkBounded 0 10

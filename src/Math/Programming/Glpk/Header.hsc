@@ -20,7 +20,7 @@ data Problem
 
 -- | An array whose data begins at index 1
 newtype GlpkArray a
-  = GlpkArray { fromGplkArray :: Ptr a }
+  = GlpkArray { fromGlpkArray :: Ptr a }
   deriving
     ( Eq
     , Ord
