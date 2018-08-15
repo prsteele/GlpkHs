@@ -5,6 +5,7 @@
 module Math.Programming.Glpk.Header where
 
 import GHC.Generics (Generic)
+import Foreign.Marshal.Alloc
 import Foreign.C
 import Foreign.C.String
 import Foreign.C.Types
@@ -28,13 +29,23 @@ newtype GlpkArray a
     , Storable
     )
 
-mkGlpkArray :: Storable a => [a] -> IO (GlpkArray a)
-mkGlpkArray xs = do
-  let aSize :: Int
-      aSize = (sizeOf (head xs))
+mallocGlpkArray :: (Storable a) => [a] -> IO (GlpkArray a)
+mallocGlpkArray xs = do
   array <- mallocArray (1 + length xs)
-  pokeArray (plusPtr array aSize) xs
-  return $ GlpkArray array
+  initializeGlpkArray xs array
+
+allocaGlpkArray :: (Storable a) => [a] -> (GlpkArray a -> IO b) -> IO b
+allocaGlpkArray xs f
+  = allocaArray (1 + length xs) $ \array -> initializeGlpkArray xs array >>= f
+
+initializeGlpkArray :: (Storable a) => [a] -> Ptr a -> IO (GlpkArray a)
+initializeGlpkArray xs array =
+  let
+    elemSize :: Int
+    elemSize = sizeOf (head xs)
+  in do
+    pokeArray (plusPtr array elemSize) xs
+    return (GlpkArray array)
 
 newtype Column
   = Column { fromColumn :: CInt}
