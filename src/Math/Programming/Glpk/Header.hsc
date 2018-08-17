@@ -47,8 +47,12 @@ initializeGlpkArray xs array =
     pokeArray (plusPtr array elemSize) xs
     return (GlpkArray array)
 
-newtype Column
-  = Column { fromColumn :: CInt}
+data GlpkColumn
+
+data GlpkRow
+
+newtype GlpkInt a
+  = GlpkInt { fromGlpkInt :: CInt }
   deriving
     ( Enum
     , Eq
@@ -58,16 +62,9 @@ newtype Column
     , Storable
     )
 
-newtype Row
-  = Row { fromRow :: CInt}
-  deriving
-    ( Enum
-    , Eq
-    , Ord
-    , Read
-    , Show
-    , Storable
-    )
+type Row = GlpkInt GlpkRow
+
+type Column = GlpkInt GlpkColumn
 
 foreign import ccall "glp_create_prob" glp_create_prob
   :: IO (Ptr Problem)
