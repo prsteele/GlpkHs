@@ -56,8 +56,11 @@ newtype GlpkInt a
   deriving
     ( Enum
     , Eq
+    , Integral
+    , Num
     , Ord
     , Read
+    , Real
     , Show
     , Storable
     )
