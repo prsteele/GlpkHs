@@ -5,6 +5,7 @@
 module Math.Programming.Glpk.Header where
 
 import GHC.Generics (Generic)
+import Foreign.Marshal.Alloc
 import Foreign.C
 import Foreign.C.String
 import Foreign.C.Types
@@ -20,7 +21,7 @@ data Problem
 
 -- | An array whose data begins at index 1
 newtype GlpkArray a
-  = GlpkArray { fromGplkArray :: Ptr a }
+  = GlpkArray { fromGlpkArray :: Ptr a }
   deriving
     ( Eq
     , Ord
@@ -28,35 +29,45 @@ newtype GlpkArray a
     , Storable
     )
 
-mkGlpkArray :: Storable a => [a] -> IO (GlpkArray a)
-mkGlpkArray xs = do
-  let aSize :: Int
-      aSize = (sizeOf (head xs))
+mallocGlpkArray :: (Storable a) => [a] -> IO (GlpkArray a)
+mallocGlpkArray xs = do
   array <- mallocArray (1 + length xs)
-  pokeArray (plusPtr array aSize) xs
-  return $ GlpkArray array
+  initializeGlpkArray xs array
 
-newtype Column
-  = Column { fromColumn :: CInt}
+allocaGlpkArray :: (Storable a) => [a] -> (GlpkArray a -> IO b) -> IO b
+allocaGlpkArray xs f
+  = allocaArray (1 + length xs) $ \array -> initializeGlpkArray xs array >>= f
+
+initializeGlpkArray :: (Storable a) => [a] -> Ptr a -> IO (GlpkArray a)
+initializeGlpkArray xs array =
+  let
+    elemSize :: Int
+    elemSize = sizeOf (head xs)
+  in do
+    pokeArray (plusPtr array elemSize) xs
+    return (GlpkArray array)
+
+data GlpkColumn
+
+data GlpkRow
+
+newtype GlpkInt a
+  = GlpkInt { fromGlpkInt :: CInt }
   deriving
     ( Enum
     , Eq
+    , Integral
+    , Num
     , Ord
     , Read
+    , Real
     , Show
     , Storable
     )
 
-newtype Row
-  = Row { fromRow :: CInt}
-  deriving
-    ( Enum
-    , Eq
-    , Ord
-    , Read
-    , Show
-    , Storable
-    )
+type Row = GlpkInt GlpkRow
+
+type Column = GlpkInt GlpkColumn
 
 foreign import ccall "glp_create_prob" glp_create_prob
   :: IO (Ptr Problem)
@@ -1383,7 +1394,7 @@ newtype GlpkConstraintType
  , glpkFree = GLP_FR
  , glpkGT = GLP_LO
  , glpkLT = GLP_UP
- , glpkEQ = GLP_DB
+ , glpkBounded = GLP_DB
  , glpkFixed = GLP_FX
  }
 

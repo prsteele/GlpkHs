@@ -29,15 +29,15 @@ main = do
   -- Set the constraint
   glp_set_row_bnds problem row glpkLT 0.1 4
 
-  indices <- mkGlpkArray [x_index, y_index]
+  indices <- mallocGlpkArray [x_index, y_index]
 
-  coefs <- mkGlpkArray [1.0, 1.0]
+  coefs <- mallocGlpkArray [1.0, 1.0]
   glp_set_mat_row problem row 2 indices coefs
-  free (fromGplkArray indices)
-  free (fromGplkArray coefs)
+  free (fromGlpkArray indices)
+  free (fromGlpkArray coefs)
 
-  glp_set_col_bnds problem x_index glpkEQ 1 8
-  glp_set_col_bnds problem y_index glpkEQ 0 10
+  glp_set_col_bnds problem x_index glpkBounded 1 8
+  glp_set_col_bnds problem y_index glpkBounded 0 10
 
   glp_set_obj_coef problem x_index 2.0
   glp_set_obj_coef problem y_index 0.5
