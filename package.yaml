@@ -1,4 +1,4 @@
-name:                GlpkHs
+name:                glpk-hs
 version:             0.1.0.0
 github:              "prsteele/GlpkHs"
 license:             BSD3
@@ -37,7 +37,7 @@ executables:
     extra-libraries:
       - glpk
     dependencies:
-    - GlpkHs
+    - glpk-hs
 
 tests:
   GlpkHs-test:
