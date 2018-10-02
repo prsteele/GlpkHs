@@ -1,4 +1,3 @@
-{-# LANGUAGE TupleSections #-}
 module Diet where
 
 import Control.Monad

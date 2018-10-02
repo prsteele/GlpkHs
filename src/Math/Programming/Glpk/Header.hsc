@@ -922,7 +922,7 @@ foreign import ccall "glp_ipt_col_prim" glp_ipt_col_prim
   -- ^ The problem instance
   -> Column
   -- ^ The variable to query
-  -> IO Double
+  -> IO CDouble
   -- ^ The primal variable value
 
 foreign import ccall "glp_ipt_col_dual" glp_ipt_col_dual
