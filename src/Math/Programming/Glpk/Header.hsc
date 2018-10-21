@@ -4,6 +4,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Math.Programming.Glpk.Header where
 
+import Data.Typeable
 import GHC.Generics (Generic)
 import Foreign.Marshal.Alloc
 import Foreign.C
@@ -1318,6 +1319,7 @@ newtype GlpkMajorVersion
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 newtype GlpkMinorVersion
@@ -1328,6 +1330,7 @@ newtype GlpkMinorVersion
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1350,6 +1353,7 @@ newtype GlpkDirection
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1368,6 +1372,7 @@ newtype GlpkVariableType
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1386,6 +1391,7 @@ newtype GlpkConstraintType
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1406,6 +1412,7 @@ newtype GlpkVariableStatus
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1426,6 +1433,7 @@ newtype GlpkScaling
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1446,6 +1454,7 @@ newtype GlpkSolutionType
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1464,6 +1473,7 @@ newtype GlpkSolutionStatus
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1486,6 +1496,7 @@ newtype GlpkMessageLevel
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1507,6 +1518,7 @@ newtype GlpkSimplexMethod
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1526,6 +1538,7 @@ newtype GlpkPricing
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1545,6 +1558,7 @@ newtype GlpkRatioTest
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1563,6 +1577,7 @@ newtype GlpkPreCholeskyOrdering
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1583,6 +1598,7 @@ newtype GlpkBranchingTechnique
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1604,6 +1620,7 @@ newtype GlpkBacktrackingTechnique
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1624,6 +1641,7 @@ newtype GlpkPreProcessingTechnique
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1643,6 +1661,7 @@ newtype GlpkFeasibilityPump
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1661,6 +1680,7 @@ newtype GlpkProximitySearch
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1679,6 +1699,7 @@ newtype GlpkGomoryCuts
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1697,6 +1718,7 @@ newtype GlpkMIRCuts
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1715,6 +1737,7 @@ newtype GlpkCoverCuts
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1733,6 +1756,7 @@ newtype GlpkCliqueCuts
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1751,6 +1775,7 @@ newtype GlpkPresolve
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1769,6 +1794,7 @@ newtype GlpkBinarization
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1787,6 +1813,7 @@ newtype GlpkSimpleRounding
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1805,6 +1832,7 @@ newtype GlpkConstraintOrigin
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1824,6 +1852,7 @@ newtype GlpkCutType
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1844,6 +1873,7 @@ newtype GlpkControl
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1861,6 +1891,7 @@ newtype GlpkCallbackReason
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1883,6 +1914,7 @@ newtype GlpkBranchOption
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1901,6 +1933,7 @@ newtype GlpkFactorizationResult
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1920,6 +1953,7 @@ newtype GlpkSimplexStatus
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1947,6 +1981,7 @@ newtype GlpkMIPStatus
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1971,6 +2006,7 @@ newtype GlpkInteriorPointStatus
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -1991,6 +2027,7 @@ newtype GlpkKKTCheck
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -2010,6 +2047,7 @@ newtype GlpkMPSFormat
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -2029,6 +2067,7 @@ newtype GlpkFactorizationType
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 #{enum
@@ -2201,6 +2240,7 @@ newtype GlpkNodeIndex
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 -- | A value between 101 and 200 used to distinguish between
@@ -2214,6 +2254,7 @@ newtype GlpkUserCutType
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 data MPSControlParameters
@@ -2268,6 +2309,7 @@ newtype MathProgResult
     , Read
     , Show
     , Storable
+    , Typeable
     )
 
 -- A type used to represent an unused or undocumented struct member.
