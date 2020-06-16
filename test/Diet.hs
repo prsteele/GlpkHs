@@ -1,13 +1,13 @@
 module Diet where
 
-import Control.Monad
-import Foreign.C.Types
-import Foreign.Ptr
-import Test.Tasty
-import Test.Tasty.HUnit
-import Text.Printf
+import           Control.Monad
+import           Foreign.C.Types
+import           Foreign.Ptr
+import           Test.Tasty
+import           Test.Tasty.HUnit
+import           Text.Printf
 
-import Math.Programming.Glpk.Header
+import           Math.Programming.Glpk.Header
 
 test_diet :: TestTree
 test_diet = testGroup "Diet problem"
@@ -34,15 +34,15 @@ basicDiet :: Assertion
 basicDiet =
   let
     cost :: Food -> CDouble
-    cost Corn = 0.18
-    cost Milk = 0.23
+    cost Corn  = 0.18
+    cost Milk  = 0.23
     cost Bread = 0.05
 
     nutrition :: Nutrient -> Food -> CDouble
-    nutrition Calories Corn = 72
-    nutrition VitaminA Corn = 107
-    nutrition Calories Milk = 121
-    nutrition VitaminA Milk = 500
+    nutrition Calories Corn  = 72
+    nutrition VitaminA Corn  = 107
+    nutrition Calories Milk  = 121
+    nutrition VitaminA Milk  = 500
     nutrition Calories Bread = 65
     nutrition VitaminA Bread = 0
 
@@ -66,14 +66,14 @@ basicDiet =
     numNutrientConstraints = fromIntegral (length nutrients)
 
     expected :: Food -> CDouble
-    expected Corn = 1.94
-    expected Milk = 10
+    expected Corn  = 1.94
+    expected Milk  = 10
     expected Bread = 10
 
     expectedCost :: CDouble
     expectedCost = 3.15
   in do
-    glp_term_out glpkOff
+    _ <- glp_term_out glpkOff
     problem <- glp_create_prob
 
     -- Create the decision variables
