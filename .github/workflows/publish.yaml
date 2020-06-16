@@ -29,4 +29,4 @@ jobs:
           HACKAGE_USERNAME: prsteele
           HACKAGE_PASSWORD: ${{ secrets.HACKAGE_KEY }}
         with:
-          commands: stack --stack-root /home/stackage --allow-different-user upload
+          commands: yes n | stack --stack-root /home/stackage --allow-different-user upload .

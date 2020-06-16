@@ -1,6 +1,6 @@
 name:                glpk-headers
-version:             0.3.0
-github:              "prsteele/GlpkHs"
+version:             0.4.0
+github:              "prsteele/glpk-headers-haskell"
 license:             BSD3
 author:              "Patrick Steele"
 maintainer:          "steele.pat@gmail.com"
@@ -13,7 +13,7 @@ extra-source-files:
 synopsis:            Low-level Haskell bindings to GLPK.
 category:            Math
 
-description:         Please see the README on GitHub at <https://github.com/prsteele/GlpkHs#readme>
+description:         Please see the README on GitHub at <https://github.com/prsteele/glpk-headers-haskell#readme>
 
 dependencies:
   - base >= 4.7 && < 5

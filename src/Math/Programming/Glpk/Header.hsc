@@ -33,7 +33,7 @@ module Math.Programming.Glpk.Header
   , FixedLengthArray (..)
 
     -- ** Low-level and phantom types
-  , GlpkInt
+  , GlpkInt (..)
   , Problem
   , GlpkColumn
   , GlpkRow
@@ -64,7 +64,7 @@ module Math.Programming.Glpk.Header
   , GlpkDirection
   , glpkMin
   , glpkMax
-  , GlpkVariableType
+  , GlpkVariableType (..)
   , glpkContinuous
   , glpkInteger
   , glpkBinary
