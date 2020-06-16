@@ -403,10 +403,7 @@ module Math.Programming.Glpk.Header
 
 import Data.Typeable
 import GHC.Generics (Generic)
-import Foreign.Marshal.Alloc
 import Foreign.C
-import Foreign.C.String
-import Foreign.C.Types
 import Foreign.Marshal.Array
 import Foreign.Ptr
 import Foreign.Storable

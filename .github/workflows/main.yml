@@ -1,0 +1,21 @@
+name: CI
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build
+        uses: prsteele/stack-build-glpk-action@v1
+        with:
+          commands: stack --stack-root /home/stackage --allow-different-user build --pedantic
+
+      - name: Test
+        uses: prsteele/stack-build-glpk-action@v1
+        with:
+          commands: stack --stack-root /home/stackage --allow-different-user test --pedantic
