@@ -1,4 +1,4 @@
-# GlpkHs
+# `glpk-headers`
 
 Comprehensive Haskell bindings to
 [GLPK](https://www.gnu.org/software/glpk/). No attempt is made to make
