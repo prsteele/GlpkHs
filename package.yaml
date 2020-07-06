@@ -1,5 +1,5 @@
 name:                glpk-headers
-version:             0.4.0
+version:             0.4.1
 github:              "prsteele/glpk-headers-haskell"
 license:             BSD3
 author:              "Patrick Steele"
@@ -17,7 +17,7 @@ description:         Please see the README on GitHub at <https://github.com/prst
 
 dependencies:
   - base >= 4.7 && < 5
-  - derive-storable >=0.1.2.0 && < 0.2
+  - derive-storable >=0.1.2.0 && < 0.3
 
 library:
   source-dirs: src
