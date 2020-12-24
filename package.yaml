@@ -21,6 +21,8 @@ dependencies:
 
 library:
   source-dirs: src
+  extra-libraries:
+    - glpk
 
 tests:
   GlpkHs-test:
@@ -30,8 +32,6 @@ tests:
       - -threaded
       - -rtsopts
       - -with-rtsopts=-N
-    extra-libraries:
-      - glpk
     dependencies:
       - glpk-headers
       - tasty
