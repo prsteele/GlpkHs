@@ -1,6 +1,6 @@
 cabal-version:       >=1.10
 name:                glpk-headers-haskell
-version:             0.4.1
+version:             0.5.0
 synopsis:            Low-level Haskell bindings to the GLPK library
 description:         Please see the README on GitHub at <https://github.com/prsteele/glpk-headers-haskell#readme>
 bug-reports:         https://github.com/prsteele/glpk-headers-haskell/issues
