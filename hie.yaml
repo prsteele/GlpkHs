@@ -1,0 +1,6 @@
+cradle:
+  cabal:
+    - path: "./src"
+      component: "glpk-headers-haskell"
+    - path: "./test"
+      component: "glpk-headers-haskell-test-suite"
