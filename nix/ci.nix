@@ -3,9 +3,9 @@
 , compiler ? "ghc884"
 }:
 let
-  shell = import ../shell.nix { inherit sources pkgs compiler; };
+  extraDeps = [
+    pkgs.cabal-install
+    pkgs.cabal2nix
+  ];
 in
-pkgs.mkShell
-  { inputsFrom = [ shell ];
-    buildInputs = [ pkgs.cabal2nix ];
-  }
+import ../shell.nix { inherit sources pkgs compiler extraDeps; }

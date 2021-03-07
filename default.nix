@@ -1,5 +1,15 @@
-{ sources ? import ./nix/sources.nix
+# You can install extra packages in the shell environment by
+# specifying additional arguments to extraDeps
+{
+  sources ? import ./nix/sources.nix
 , pkgs ? import sources.nixpkgs { }
 , compiler ? "ghc884"
+, extraDeps ? []
 }:
-pkgs.haskell.packages.${compiler}.callPackage ./nix/glpk-headers-haskell.nix { }
+let
+  mkDerivation =
+    args@{ librarySystemDepends ? [], ... }:
+    pkgs.haskell.packages.${compiler}.mkDerivation
+      ( args // { librarySystemDepends = librarySystemDepends ++ extraDeps; });
+in
+pkgs.haskell.packages.${compiler}.callPackage ./glpk-headers-haskell.nix { inherit mkDerivation; }
