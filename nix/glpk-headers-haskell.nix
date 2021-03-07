@@ -1,4 +1,4 @@
-{ mkDerivation, base, derive-storable, glpk, lib, tasty
+{ mkDerivation, base, derive-storable, glpk, stdenv, tasty
 , tasty-discover, tasty-hunit
 }:
 mkDerivation {
@@ -11,5 +11,5 @@ mkDerivation {
   testSystemDepends = [ glpk ];
   testToolDepends = [ tasty-discover ];
   description = "Low-level Haskell bindings to the GLPK library";
-  license = lib.licenses.bsd3;
+  license = stdenv.lib.licenses.bsd3;
 }
