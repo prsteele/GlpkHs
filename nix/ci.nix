@@ -6,6 +6,7 @@ let
   extraDeps = [
     pkgs.cabal-install
     pkgs.cabal2nix
+    pkgs.diffutils
   ];
 in
 import ../shell.nix { inherit sources pkgs compiler extraDeps; }
