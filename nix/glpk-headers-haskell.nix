@@ -3,7 +3,7 @@
 }:
 mkDerivation {
   pname = "glpk-headers-haskell";
-  version = "0.4.1";
+  version = "0.5.0";
   src = ./.;
   libraryHaskellDepends = [ base derive-storable ];
   librarySystemDepends = [ glpk ];
