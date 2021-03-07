@@ -1,3 +1,2 @@
-#! /usr/bin/env nix-shell
-#! nix-shell --pure -q -i bash ../nix/ci.nix
+#! /usr/bin/env bash
 cabal2nix . | diff nix/glpk-headers-haskell.nix -

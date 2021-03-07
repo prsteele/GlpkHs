@@ -1,4 +1,5 @@
-#! /usr/bin/env bash
+#! /usr/bin/env nix-shell
+#! nix-shell --pure --quiet -i bash ../nix/ci.nix
 
 echo "#"
 echo "# Verifying nix/glpk-headers-haskell.nix is up to date..."
