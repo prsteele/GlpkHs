@@ -1,2 +1,0 @@
-#! /usr/bin/env bash
-cabal2nix . | diff nix/glpk-headers-haskell.nix -

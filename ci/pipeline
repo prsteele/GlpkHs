@@ -4,9 +4,9 @@
 echo "#"
 echo "# Verifying nix/glpk-headers-haskell.nix is up to date..."
 echo "#"
-./ci/verify-project-nix
+cabal2nix . | diff nix/glpk-headers-haskell.nix -
 
 echo "#"
 echo "# Running tests..."
 echo "#"
-./ci/test
+cabal test --test-show-details=streaming --test-options='--color=always' "$@"
