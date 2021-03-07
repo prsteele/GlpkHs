@@ -1,3 +1,3 @@
 #! /usr/bin/env nix-shell
-#! nix-shell --pure -i bash ../nix/ci.nix
+#! nix-shell --pure --no-build-output -i bash ../nix/ci.nix
 cabal2nix . | diff nix/glpk-headers-haskell.nix -

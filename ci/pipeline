@@ -1,7 +1,11 @@
 #! /usr/bin/env bash
 
-echo "Verifying nix/glpk-headers-haskell.nix is up to date..."
+echo "#"
+echo "# Verifying nix/glpk-headers-haskell.nix is up to date..."
+echo "#"
 ./ci/verify-project-nix
 
-echo "Running tests..."
-./s/test
+echo "#"
+echo "# Running tests..."
+echo "#"
+./ci/test
